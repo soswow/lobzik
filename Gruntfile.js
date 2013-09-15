@@ -406,7 +406,11 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', [
+    'clean:server',
+    'concurrent:server',
+    'autoprefixer',
+    'connect:livereload',
     'express:dev',
-    'server'
+    'watch'
   ]);
 };

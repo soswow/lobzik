@@ -9,7 +9,8 @@
     "mongoose": "~3.6.11",
     "baucis": "~0.4.6",
     "express-hbs": "~0.2.0",
-    "underscore": "~1.4.4"
+    "underscore": "~1.4.4",
+    "everyauth": "~0.4.5"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
