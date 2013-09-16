@@ -409,7 +409,7 @@ module.exports = function (grunt) {
     'clean:server',
     'concurrent:server',
     'autoprefixer',
-    'connect:livereload',
+//    'connect:livereload',
     'express:dev',
     'watch'
   ]);
