@@ -25,25 +25,15 @@ db.once 'open', ->
     appSecret: 'a306648c84c087d7bcdab64bca185c72ffc931bd'
     scope: ''
     userPkey: '_id'
-#    handleAuthCallbackError: (req, res) ->
-#      console.error "handleAuthCallbackError", req, res
     findOrCreateUser: (session, accessToken, accessTokenExtra, githubUserMetadata) ->
       console.log "findOrCreateUser"
-#      session.oauth = accessToken
-#      session.user = githubUserMetadata
-#      session.uid = githubUserMetadata.login
       promise = @Promise()
       authEmail = githubUserMetadata.email
-      console.log authEmail
       User.findByEmail authEmail, (err, user) ->
-        console.log 1, err, user
         if err or not user
-          console.log 2, err
           user = new User(email: authEmail)
-          console.log 3, user
           user.save (err, user) ->
             return promise.fail(err) if err
-            console.log 4, user
             promise.fulfill(user)
         else
           promise.fulfill(user)
@@ -51,7 +41,6 @@ db.once 'open', ->
     redirectPath: '/'
 
   everyauth.everymodule.findUserById (userId, callback) ->
-    console.log "findUserById", userId
     User.findById userId, callback
 
   app = express()
@@ -85,9 +74,11 @@ db.once 'open', ->
     res.sendfile path.join( __dirname, '../../app/index.html')
 
   app.get "/user", (req, res) ->
-    console.log req.user
-    name = req.user?.email or "Unknown@"
-    res.send "Hello #{name} 1 <a href='/auth/github'>Login</a>"
+    user = req.user
+    if user
+      res.send user
+    else
+      res.send 403, 'Not logged in'
 
   # start server
   http.createServer(app).listen app.get("port"), ->
