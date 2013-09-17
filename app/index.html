@@ -19,8 +19,11 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        <div class="container">
+        <div id="loader">
+          <div class="icon-refresh icon-spin"></div>
+        </div>
 
+        <div class="container">
             <div id="login-screen" class="jumbotron screen">
                 <h1>Ready to start?</h1>
                 <p class="lead">Please login with one of true coders ways:</p>
@@ -37,13 +40,17 @@
 
 
         <!-- build:js scripts/vendor.js -->
-        <!-- bower:js -->
         <script src="bower_components/jquery/jquery.js"></script>
-        <!-- endbower -->
+        <script src="bower_components/underscore/underscore.js"></script>
+        <script src="bower_components/backbone/backbone.js"></script>
         <!-- endbuild -->
 
-        <!-- build:js(.tmp) scripts/coffee.js -->
-        <script src="scripts/hello.js"></script>
+        <!-- build:js(.tmp) scripts/main.js -->
+        <script src="scripts/init.js"></script>
+        <script src="scripts/view.js"></script>
+        <script src="scripts/model.js"></script>
+        <script src="scripts/router.js"></script>
+        <script src="scripts/start.js"></script>
         <!-- endbuild -->
 
         <!-- build:js scripts/plugins.js -->

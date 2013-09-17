@@ -73,7 +73,7 @@ db.once 'open', ->
   app.get '/', (req, res) ->
     res.sendfile path.join( __dirname, '../../app/index.html')
 
-  app.get "/user", (req, res) ->
+  app.get "/api/user", (req, res) ->
     user = req.user
     if user
       res.send user
