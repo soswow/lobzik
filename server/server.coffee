@@ -11,6 +11,9 @@ db = mongoose.connection
 db.on 'error', console.error.bind console, 'connection error:'
 db.once 'open', ->
 
+  env =
+    maxDuration: 30 * 60 * 1000
+
   schemaOptions =
     toObject:
       virtuals: true
@@ -36,13 +39,13 @@ db.once 'open', ->
       @finished = true
       @save cb
     else
-      console.log(this)
       cb null, this
 
-  maxDuration = 30 * 60 * 1000
   userSchema.statics.findByEmail = (email, cb) -> @findOne { email: email }, cb
   userSchema.virtual('durationLeft').get ->
-    maxDuration - (Date.now() - @startedAt.getTime())
+    res = Math.ceil (env.maxDuration - (Date.now() - @startedAt.getTime())) / 1000
+    res = 0 if res < 0
+    res
 
   User = mongoose.model 'User', userSchema
 
@@ -54,7 +57,6 @@ db.once 'open', ->
     scope: ''
     userPkey: '_id'
     findOrCreateUser: (session, accessToken, accessTokenExtra, githubUserMetadata) ->
-      console.log "findOrCreateUser"
       promise = @Promise()
       authEmail = githubUserMetadata.email
       User.findByEmail authEmail, (err, user) ->
@@ -70,25 +72,25 @@ db.once 'open', ->
 
   everyauth.everymodule.findUserById (userId, callback) ->
     User.findById userId, (err, user) ->
-      callback(null) if err or not user
+      return callback(null) if err or not user
       user.checkIfFinished callback
 
   app = express()
-  app.use express.static path.join( __dirname, '../../app')
-  app.use express.static path.join( __dirname, '..')
-  app.use express.bodyParser()
-  app.use express.cookieParser()
-  app.use express.session secret: 'as8df7a76d5f67sd'
-  app.use everyauth.middleware()
-  app.set "port", process.env.PORT or 3000
 
   app.configure 'development', ->
-    console.log "dev"
     app.use require('connect-livereload')(
       port: 35729
+      excludeList: ['/auth', '.js', '.css', '.svg', '.ico', '.woff', '.png', '.jpg', '.jpeg']
     )
 
-
+  app.use express.json()
+  app.use express.urlencoded()
+  app.use express.cookieParser()
+  app.use express.session secret: 'as8df7a76d5f67sd'
+  app.use express.static path.resolve __dirname, '../../app'
+  app.use express.static path.resolve __dirname, '..'
+  app.use everyauth.middleware()
+  app.set "port", process.env.PORT or 3000
 
   # simple log
   app.use (req, res, next) ->
@@ -101,12 +103,17 @@ db.once 'open', ->
   app.get '/', (req, res) ->
     res.sendfile path.join( __dirname, '../../app/index.html')
 
+
   app.get "/api/user", (req, res) ->
     user = req.user
     if user
       res.send user.toJSON()
     else
       res.send 403, 'Not logged in'
+
+
+  app.get "/api/env", (req, res) ->
+    res.send env
 
   # start server
   http.createServer(app).listen app.get("port"), ->

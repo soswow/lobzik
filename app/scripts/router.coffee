@@ -7,7 +7,7 @@ class app.Router extends Backbone.Router
 #    "result":  "result"
     "*path":  "redirect"
 
-  redirectUser: (page) ->
+  redirectUser: ->
     if app.user.get('finished')
       @navigate 'result'
       app.mainView.show 'result'
@@ -23,6 +23,7 @@ class app.Router extends Backbone.Router
       app.user.fetch
         success: =>
           app.mainView.hideLoader()
+          app.env.fetch()
           @redirectUser page
         error: =>
           app.mainView.hideLoader()

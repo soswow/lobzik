@@ -31,32 +31,29 @@ class app.MainView extends Backbone.View
   el: "body > .container"
 
   initialize: ->
+    _.bindAll @, 'drawTimeLeft'
     @$breadcrumb = @$('.breadcrumb')
     @views =
       login: new app.LoginView()
       test: new app.TestView()
       result: new app.ResultView()
+    @$time = @$breadcrumb.find(".time").show()
 
   startTimer: ->
-    $time = @$breadcrumb.find(".time").show()
-    clearInterval @timerInterval if @timerInterval
-    maxDuration = 30 * 60 * 1000
-    padZero = (num) -> (num < 10 and "0" or "") + num
+    app.user.on 'change:durationLeft', @drawTimeLeft, this
+
+  drawTimeLeft: ->
     boldStart = "<span class='bold'>"
-    @timerInterval = setInterval ( ->
-      diff = maxDuration - moment().diff app.user.get 'startedAt'
-      diff = 0 if diff <= 0
-      dur = moment.duration diff
-      time = [padZero(dur.hours()), (dur.minutes() > 0 and boldStart or "") +
-              padZero(dur.minutes()), (dur.minutes() is 0 and boldStart or "") +
-              padZero(dur.seconds()) + "</span>"].join(":")
-      $time.html time
-      clearInterval @timerInterval if dur is 0
-    ), 200
+    dur = moment.duration app.user.get('durationLeft') * 1000
+    padZero = (num) -> (num < 10 and "0" or "") + num
+    time = [padZero(dur.hours()), (dur.minutes() > 0 and boldStart or "") +
+    padZero(dur.minutes()), (dur.minutes() is 0 and boldStart or "") +
+            padZero(dur.seconds()) + "</span>"].join(":")
+    @$time.html time
 
   stopTimer: ->
-    clearInterval @timerInterval if @timerInterval
     @$breadcrumb.find(".time").hide()
+    app.user.off 'change:durationLeft', this
 
   showLoader: ->
     $("#loader").addClass 'show'

@@ -24,13 +24,13 @@ module.exports = function (grunt) {
   grunt.initConfig({
     yeoman: yeomanConfig,
     watch: {
-      coffee: {
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee', '<%= yeoman.server %>/{,*/}*.coffee'],
-        tasks: ['coffee:dist']
+      coffeeClient: {
+        files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee'],
+        tasks: ['coffee:client']
       },
-      coffeeTest: {
-        files: ['test/spec/{,*/}*.coffee'],
-        tasks: ['coffee:test']
+      coffeeServer: {
+        files: ['<%= yeoman.server %>/{,*/}*.coffee'],
+        tasks: ['coffee:server']
       },
       compass: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
@@ -61,7 +61,7 @@ module.exports = function (grunt) {
     },
     connect: {
       options: {
-        port: 9000,
+        port: 3000,
         livereload: 35729,
         // change this to '0.0.0.0' to access the server from outside
         hostname: 'localhost'
@@ -148,7 +148,7 @@ module.exports = function (grunt) {
       }
     },
     coffee: {
-      dist: {
+      client: {
         files: [
           {
             expand: true,
@@ -156,7 +156,12 @@ module.exports = function (grunt) {
             src: ['{,*/}*.coffee'],
             dest: '.tmp/scripts',
             ext: '.js'
-          }, {
+          }
+        ]
+      },
+      server:{
+        files: [
+          {
             expand: true,
             cwd: '<%= yeoman.server %>',
             src: ['{,*/}*.coffee'],
@@ -348,7 +353,8 @@ module.exports = function (grunt) {
     concurrent: {
       server: [
         'compass',
-        'coffee:dist',
+        'coffee:server',
+        'coffee:client',
         'copy:styles',
         'copy:fonts'
       ],
