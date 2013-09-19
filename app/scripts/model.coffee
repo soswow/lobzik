@@ -5,8 +5,8 @@ class app.User extends Backbone.Model
 
   initialize: ->
     _.bindAll @, 'updateDurLeft'
-    @on 'sync', @updateDurLeft
-    app.env.on 'sync', @updateDurLeft
+    @on 'change:id', @updateDurLeft
+    app.env.on 'change:maxDuration', @updateDurLeft
 
   updateDurLeft: ->
     return unless @id

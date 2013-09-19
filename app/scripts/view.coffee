@@ -23,38 +23,46 @@ class app.TestView extends Backbone.View
   questions: []
   initialize: ->
     @currentQuestion = 1
-    app.env.on 'sync', =>
-      if app.env.get('testQuestions')
-        @questions = app.env.get('testQuestions')
+    if app.env.has 'testQuestions'
+      @renderQuestions()
+    else
+      app.env.on 'change:testQuestions', =>
         @renderQuestions()
-    app.user.on 'sync', =>
-      if app.user.id
-        @renderUser()
+
+    app.user.on 'change:id', =>
+      @renderUser()
 
   renderUser: ->
     app.mainView.startTimer()
     $("#loggedin-user").show().find(".email").text app.user.get('email')
 
   renderPaginator: ->
-    @$('.pagination-js').html @paginatorTemplate max: @questions.length, current: @currentQuestion
+    @$('.pagination-js').html @paginatorTemplate
+      max: @questions.length
+      current: @currentQuestion
+      labels: []
+      nextLabel: 'Next'
 
   changeQuestionPage: (e) ->
     @currentQuestion = $(e.currentTarget).data "index"
     @renderPaginator()
     @showCurrentQuestion()
+    return false
 
-  nextQuestion: (e) ->
+  nextQuestion: ->
     if @currentQuestion is @questions.length
-      #Open Code assignments
+      app.router.navigate 'coding', trigger: true
     else
       @currentQuestion += 1
       @renderPaginator()
       @showCurrentQuestion()
+    return false
 
   showCurrentQuestion: ->
     @$(".questions .question").hide().filter("." + @questions[@currentQuestion-1].name).show()
 
   renderQuestions: ->
+    @questions = app.env.get('testQuestions')
     @renderPaginator()
     $questions = @$(".questions").empty()
     for question in @questions
@@ -65,6 +73,59 @@ class app.TestView extends Backbone.View
 class app.TestQuestionView extends Backbone.View
 
   render: ->
+
+
+class app.CodingView extends Backbone.View
+
+  el: "#coding"
+
+  events:
+    'click .pagination a.page': 'changeQuestionPage'
+    'click .pagination a.next': 'nextQuestion'
+
+  paginatorTemplate: _.template $("#pagination-tmpl").html()
+  assignmentTemplate: _.template $("#code-assignment-tmpl").html()
+
+  initialize: ->
+    @currentAssignment = 1
+    if app.env.has 'codeAssignments'
+      @renderAssignments()
+    else
+      app.env.on 'change:codeAssignments', =>
+        @renderAssignments()
+
+  changeQuestionPage: (e) ->
+    @currentAssignment = $(e.currentTarget).data "index"
+    @renderPaginator()
+    @showCurrentAssignment()
+    return false
+
+  nextQuestion: ->
+    if @currentAssignment is @codeAssignments.length
+      app.router.navigate 'result', trigger: true
+    else
+      @currentAssignment += 1
+      @renderPaginator()
+      @showCurrentAssignment()
+    return false
+
+  renderPaginator: ->
+    @$('.pagination-js').html @paginatorTemplate
+      max: @codeAssignments.length
+      current: @currentAssignment
+      labels: ['Easy', 'Hard', 'Creative']
+      nextLabel: 'Next'
+
+  showCurrentAssignment: ->
+    @$(".assignments .assignment").hide().filter("." + @codeAssignments[@currentAssignment-1].name).show()
+
+  renderAssignments: ->
+    @codeAssignments = app.env.get('codeAssignments').concat app.env.get('creativeCodeAssignment')
+    @renderPaginator()
+    $assignments = @$(".assignments").empty()
+    for assignment in @codeAssignments
+      $assignments.append @assignmentTemplate assignment
+    @showCurrentAssignment()
 
 
 class app.ResultView extends Backbone.View
@@ -85,6 +146,7 @@ class app.MainView extends Backbone.View
     @views =
       login: new app.LoginView()
       test: new app.TestView()
+      coding: new app.CodingView()
       result: new app.ResultView()
     @$time = @$breadcrumb.find(".time").show()
 

@@ -36,7 +36,7 @@
   <ol class="breadcrumb">
     <li class="step login" ><span>Login</span></li>
     <li class="step test"><span>Test questions</span></li>
-    <li class="step "><span>Code assignment</span></li>
+    <li class="step coding"><span>Code assignment</span></li>
     <li class="step result"><span>Result</span></li>
     <li class="time "></li>
   </ol>
@@ -99,9 +99,18 @@
       <div class="col-md-6 pagination-js"></div>
     </div>
     <div class="questions">
-
     </div>
+  </div>
 
+  <div id="coding" class="screen">
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Code</h2>
+      </div>
+      <div class="col-md-6 pagination-js"></div>
+    </div>
+    <div class="assignments">
+    </div>
   </div>
 
   <div id="result" class="screen">
@@ -114,9 +123,9 @@
 <script id="pagination-tmpl" type="text/html">
   <ul class="pagination pull-right">
     <% for(var i=1;i<=max;i++) { %>
-      <li <% if(i===current){%> class="active" <%}%> ><a class="page" href="#" data-index='<%= i %>'><%= i %></a></li>
+      <li <% if(i===current){%> class="active" <%}%> ><a class="page" href="#" data-index='<%= i %>'><%= labels[i-1] || i  %></a></li>
     <% } %>
-    <li><a href="#" class="next">Next <i class="icon-arrow-right" style="margin-left: 5px"></i></a></li>
+    <li><a href="#" class="next"><%= nextLabel %> <i class="icon-arrow-right" style="margin-left: 5px"></i></a></li>
   </ul>
 </script>
 
@@ -130,6 +139,13 @@
         <% }) %>
       </ul>
     </div>
+  </div>
+</script>
+
+<script id="code-assignment-tmpl" type="text/html">
+  <div class="row assignment <%= name %>">
+    <%= description %>
+    <textarea name="" id="" cols="30" rows="10"><%= placeholderCode %></textarea>
   </div>
 </script>
 

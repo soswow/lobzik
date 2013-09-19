@@ -7,15 +7,19 @@ class app.Router extends Backbone.Router
 #    "result":  "result"
     "*path":  "redirect"
 
-  redirectUser: ->
+  redirectUser: (page) ->
     if app.user.get('finished')
       @navigate 'result'
       app.mainView.show 'result'
     else
-      @navigate 'test'
-      app.mainView.show 'test'
+      unless page in ['test', 'coding']
+        page = 'test'
+        console.log "navigating to #{page}"
+        @navigate page
+      app.mainView.show page
 
   redirect: (page) ->
+    console.log "routing #{page}"
     if app.user.id
       @redirectUser page
     else
