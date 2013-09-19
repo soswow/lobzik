@@ -17,6 +17,9 @@
   <!-- build:css(.tmp) styles/main.css -->
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
+  <!-- build:css styles/code-theme.css -->
+  <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css">
+  <!-- endbuild -->
 </head>
 <body>
 <!--[if lt IE 10]>
@@ -29,6 +32,7 @@
 </div>
 
 <div class="container">
+  <div class="alert"></div>
   <div id="loggedin-user">
     <span class="email"><i class="icon-github-sign"></i> soswow@gmail.com</span>
     <a class="logout" href="/logout"><i class="icon-signout"></i></a>
@@ -143,8 +147,11 @@
 </script>
 
 <script id="code-assignment-tmpl" type="text/html">
-  <div class="row assignment <%= name %>">
-    <%= description %>
+  <div class="assignment <%= name %>">
+    <div class="row relative">
+      <div class="col-md-8"><%= description %></div>
+      <div class="col-md-4 at-bottom"><button class="btn btn-primary pull-right">Test your code</button></div>
+    </div>
     <textarea name="" id="" cols="30" rows="10"><%= placeholderCode %></textarea>
   </div>
 </script>
@@ -154,6 +161,8 @@
 <script src="bower_components/underscore/underscore.js"></script>
 <script src="bower_components/backbone/backbone.js"></script>
 <script src="bower_components/momentjs/moment.js"></script>
+<script src="bower_components/codemirror/lib/codemirror.js"></script>
+<script src="bower_components/codemirror/mode/coffeescript/coffeescript.js"></script>
 <!-- endbuild -->
 
 <!-- build:js(.tmp) scripts/main.js -->

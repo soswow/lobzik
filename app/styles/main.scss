@@ -103,6 +103,23 @@ body {
   display: none;
 }
 
+.container {
+  position: relative;
+
+  > .alert{
+    @include transition(top 0.5s);
+    position: absolute;
+    top: 0;
+    left: 15px;
+    right: 15px;
+    padding: 7px 15px;
+    z-index: 50;
+    &.show{
+      top: 38px;
+    }
+  }
+}
+
 #loader{
   @include transition(opacity 0.5s);
   position: fixed;
@@ -138,6 +155,8 @@ body {
 }
 
 .breadcrumb{
+  z-index: 100;
+  position: relative;
   > li + li:before{
     content: "\f101";
     font-family: "FontAwesome";
@@ -165,9 +184,6 @@ body {
 
 }
 
-.container {
-  position: relative;
-}
 #loggedin-user{
   display: none;
   position: absolute;
@@ -199,4 +215,29 @@ body {
   .question{
     display: none;
   }
+}
+
+#coding{
+  .CodeMirror{
+    margin-top: $padding-base-vertical * 3;
+    border-top: 1px solid lightgray;
+  }
+}
+
+.assignment{
+  .row{
+    position: relative;
+    min-height: 33px;
+    .at-bottom{
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+  }
+}
+#awesome-canvas{
+  height: 300px;
+  width: 480px;
+  margin-top: $padding-base-vertical * 3;
+  border: 1px dashed gray;
 }

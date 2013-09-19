@@ -118,14 +118,26 @@ class app.CodingView extends Backbone.View
 
   showCurrentAssignment: ->
     @$(".assignments .assignment").hide().filter("." + @codeAssignments[@currentAssignment-1].name).show()
+    @render()
 
   renderAssignments: ->
     @codeAssignments = app.env.get('codeAssignments').concat app.env.get('creativeCodeAssignment')
     @renderPaginator()
     $assignments = @$(".assignments").empty()
+    @codeMirrors = {}
     for assignment in @codeAssignments
-      $assignments.append @assignmentTemplate assignment
+      $assignment = $ @assignmentTemplate assignment
+      $assignments.append $assignment
+      @codeMirrors[assignment.name] = CodeMirror.fromTextArea $assignment.find("textarea").get(0),
+          value: assignment.placeholderCode
+          mode: 'coffeescript'
+          tabSize: 2
+          lineNumbers: true
     @showCurrentAssignment()
+
+  render: ->
+    for codeMirror in _.values @codeMirrors
+      codeMirror.refresh()
 
 
 class app.ResultView extends Backbone.View
@@ -172,14 +184,17 @@ class app.MainView extends Backbone.View
   hideLoader: ->
     $("#loader").removeClass 'show'
 
+  showAlert: (msg, type) ->
+    $box = $(".container > .alert").html(msg).addClass("alert-#{type} show")
+    setTimeout (-> $box.removeClass("show")), 4000
+    setTimeout (-> $box.removeClass("alert-#{type}")), 5000
+
   show: (viewName) ->
-#    @currentView = viewName
     @$breadcrumb.find(".step").removeClass("active").filter(".#{viewName}").addClass("active")
-#    @$breadcrumb.find(".step.#{viewName} span").wrap("<a href='#'></a>")
     for name, view of @views
       if name is viewName
-        view.render()
         view.$el.show()
+        view.render()
       else
         view.$el.hide()
 

@@ -58,5 +58,12 @@ module.exports =
   ]
   creativeCodeAssignment:
     name: "creative"
-    description: "Wanna prove you are The Best? Prove it! Draw us a fireworks! Make it awesome! (Canvas 2d context object is given as argument)"
-    placeholderCode: "(ctx) -> #your code goes here"
+    description: """
+                 Wanna prove you are The Best? </br>
+                 Prove it! Draw us a fireworks! Make it awesome!
+                 <canvas id='awesome-canvas'></canvas>
+                 """
+    placeholderCode: """
+                     canvas = document.getElementById '#awesome-canvas'
+                     ctx = canvas.getContext '2d'
+                     #your code goes here"""
