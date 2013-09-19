@@ -7,11 +7,7 @@ everyauth = require("everyauth")
 _ = require("underscore")
 mongoose = require("mongoose")
 mongoose.connect 'mongodb://localhost/test'
-quizConfig =
-  if process.env.NODE_ENV is 'development'
-    require('../../server/quiz-config')
-  else
-    require('./quiz-config')
+quizConfig = require('./quiz-config')
 
 db = mongoose.connection
 db.on 'error', console.error.bind console, 'connection error:'
@@ -109,9 +105,6 @@ db.once 'open', ->
     console.log "%s %s", req.method, req.url
     next()
 
-  app.get "/test", (req, res) ->
-    res.send "Hello Alex 3"
-
   app.get '/', (req, res) ->
     res.sendfile path.join( __dirname, '../../app/index.html')
 
@@ -129,7 +122,10 @@ db.once 'open', ->
     user = req.user
     if user and not user.finished
       userEnv.testQuestions = user.testIndecies.map (i) -> _.omit quizConfig.testQuestions[i], 'rightAnswer'
-      userEnv.codeAssignments = user.codeAsignIndecies.map (i) -> quizConfig.codeAssignments[i]
+      userEnv.codeAssignments = user.codeAsignIndecies.map (i) ->
+        question = _.clone quizConfig.codeAssignments[i]
+        question.testCase = question.testCase?.toString()
+        question
       userEnv.creativeCodeAssignment = quizConfig.creativeCodeAssignment
 
     res.send userEnv

@@ -96,16 +96,12 @@
       <div class="col-md-6">
         <h2>Test</h2>
       </div>
-      <div class="col-md-6">
-        <ul class="pagination pull-right">
-          <li><a href="#">1</a></li>
-          <li class="active"><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">Next <i class="icon-arrow-right" style="margin-left: 5px"></i></a></li>
-        </ul>
-      </div>
+      <div class="col-md-6 pagination-js"></div>
     </div>
+    <div class="questions">
+
+    </div>
+
   </div>
 
   <div id="result" class="screen">
@@ -115,6 +111,27 @@
   </div>
 </div>
 
+<script id="pagination-tmpl" type="text/html">
+  <ul class="pagination pull-right">
+    <% for(var i=1;i<=max;i++) { %>
+      <li <% if(i===current){%> class="active" <%}%> ><a class="page" href="#" data-index='<%= i %>'><%= i %></a></li>
+    <% } %>
+    <li><a href="#" class="next">Next <i class="icon-arrow-right" style="margin-left: 5px"></i></a></li>
+  </ul>
+</script>
+
+<script id="test-question-tmpl" type="text/html">
+  <div class="row question <%= name %>">
+    <div class="col-md-4"><%= description %></div>
+    <div class="col-md-8">
+      <ul class="list-unstyled">
+        <% _.each(options, function(option, i){ %>
+          <li><label><input type="checkbox"/> <%= option %></label></li>
+        <% }) %>
+      </ul>
+    </div>
+  </div>
+</script>
 
 <!-- build:js scripts/vendor.js -->
 <script src="bower_components/jquery/jquery.js"></script>

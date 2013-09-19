@@ -13,9 +13,58 @@ class app.LoginView extends Backbone.View
 class app.TestView extends Backbone.View
   el: "#test"
 
-  render: ->
+  events:
+    'click .pagination a.page': 'changeQuestionPage'
+    'click .pagination a.next': 'nextQuestion'
+
+  paginatorTemplate: _.template $("#pagination-tmpl").html()
+  questionTemplate: _.template $("#test-question-tmpl").html()
+
+  questions: []
+  initialize: ->
+    @currentQuestion = 1
+    app.env.on 'sync', =>
+      if app.env.get('testQuestions')
+        @questions = app.env.get('testQuestions')
+        @renderQuestions()
+    app.user.on 'sync', =>
+      if app.user.id
+        @renderUser()
+
+  renderUser: ->
     app.mainView.startTimer()
     $("#loggedin-user").show().find(".email").text app.user.get('email')
+
+  renderPaginator: ->
+    @$('.pagination-js').html @paginatorTemplate max: @questions.length, current: @currentQuestion
+
+  changeQuestionPage: (e) ->
+    @currentQuestion = $(e.currentTarget).data "index"
+    @renderPaginator()
+    @showCurrentQuestion()
+
+  nextQuestion: (e) ->
+    if @currentQuestion is @questions.length
+      #Open Code assignments
+    else
+      @currentQuestion += 1
+      @renderPaginator()
+      @showCurrentQuestion()
+
+  showCurrentQuestion: ->
+    @$(".questions .question").hide().filter("." + @questions[@currentQuestion-1].name).show()
+
+  renderQuestions: ->
+    @renderPaginator()
+    $questions = @$(".questions").empty()
+    for question in @questions
+      $questions.append @questionTemplate question
+    @showCurrentQuestion()
+
+
+class app.TestQuestionView extends Backbone.View
+
+  render: ->
 
 
 class app.ResultView extends Backbone.View
