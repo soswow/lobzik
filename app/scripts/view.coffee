@@ -6,7 +6,7 @@ class app.LoginView extends Backbone.View
 
   render: ->
 
-  clickButton: (e) ->
+  clickButton: ->
     app.mainView.showLoader()
 
 

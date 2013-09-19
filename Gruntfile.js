@@ -99,12 +99,14 @@ module.exports = function (grunt) {
       },
       dev: {
         options: {
-          script: '<%= yeoman.tmpServer %>/server.js'
+          script: '<%= yeoman.tmpServer %>/server.js',
+          node_env: 'development'
         }
       },
       prod: {
         options: {
-          script: '<%= yeoman.tmpServer %>/server.js'
+          script: '<%= yeoman.tmpServer %>/server.js',
+          node_env: 'production'
         }
       },
       test: {

@@ -1,6 +1,8 @@
 {
-  "time-restriction": "200000",
-  "test-questions": [
+  "maxDuration": "200000",
+  "testQuestionsToShow": 2,
+  "codeAssignmentsToShow": 2,
+  "testQuestions": [
     {
       "name": "fish-question",
       "description": "Did you catch that fish?",
@@ -9,7 +11,7 @@
           "No, I was sitting here minding my own business when the crazy thing jumped into my pail.",
           "No, it's a plastic model to get people like you to start fascinating conversations."
       ],
-      "right-answer": 2
+      "rightAnswer": 2
     },
     {
       "name": "question-two",
@@ -19,7 +21,7 @@
         "wrong answer 2",
         "right answer"
       ],
-      "right-answer": 2
+      "rightAnswer": 2
     },
     {
       "name": "question-three",
@@ -29,17 +31,15 @@
         "wrong answer 2",
         "right answer"
       ],
-      "right-answer": 2
+      "rightAnswer": 2
     }
   ],
-  "test-questions-to-show": 2,
-
-  "code-assignments": [
+  "codeAssignments": [
     {
       "name": "foobar-game",
       "description": "Let's play `foo-bar` game! Implement function, that returns `foo` if given input divisible by 3, `bar` if divisible by 5 and `foobar` if divisible by 3 AND 5, otherwise return number itself.",
-      "placeholder-code": "(num) -> #your code goes here",
-      "test-cases": [
+      "placeholderCode": "(num) -> #your code goes here",
+      "testCases": [
         {
           "code": "<script>var answers = [0,1,2,'foo',4,'bar','foo',7,8,'foo','bar',11,'foo',13,14,'foobar']; for(var i=0;i<answers.length;i++){assert(fun(i), answers[i])}"
         }
@@ -48,8 +48,8 @@
     {
       "name": "harder",
       "description": "Implement a function that reverse a input string",
-      "placeholder-code": "(line) -> #your code goes here",
-      "test-cases": [
+      "placeholderCode": "(line) -> #your code goes here",
+      "testCases": [
         {
           "code": "<script>assert(fun(''), '')</script>"
         },
@@ -66,12 +66,12 @@
           "code": "<script>assert(fun('abcd'), 'dcba')</script>"
         }
       ]
-    },
-    {
-      "name": "creative",
-      "description": "Wanna prove you are The Best? Prove it! Draw us a fireworks! Make it awesome! (Canvas 2d context object is given as argument)",
-      "placeholder-code": "(ctx) -> #your code goes here",
-      "test-cases": []
     }
-  ]
+  ],
+  "creativeCodeAssignment": {
+    "name": "creative",
+    "description": "Wanna prove you are The Best? Prove it! Draw us a fireworks! Make it awesome! (Canvas 2d context object is given as argument)",
+    "placeholderCode": "(ctx) -> #your code goes here",
+    "testCases": []
+  }
 }

@@ -4,15 +4,21 @@ express = require("express")
 http = require("http")
 path = require("path")
 everyauth = require("everyauth")
+_ = require("underscore")
 mongoose = require("mongoose")
 mongoose.connect 'mongodb://localhost/test'
+quizConfig =
+  if process.env.NODE_ENV is 'development'
+    require('../../server/quiz-config')
+  else
+    require('./quiz-config')
 
 db = mongoose.connection
 db.on 'error', console.error.bind console, 'connection error:'
 db.once 'open', ->
 
   env =
-    maxDuration: 30 * 60 * 1000
+    maxDuration: quizConfig.maxDuration
 
   schemaOptions =
     toObject:
@@ -24,12 +30,12 @@ db.once 'open', ->
     {
       email: String
       name: String
-      startedAt:
-        type: Date
-        'default': Date.now
+      startedAt: Date
       finished:
         type: Boolean
         'default': false
+      testIndecies: [Number]
+      codeAsignIndecies: [Number]
     }, schemaOptions
   )
 
@@ -42,6 +48,12 @@ db.once 'open', ->
       cb null, this
 
   userSchema.statics.findByEmail = (email, cb) -> @findOne { email: email }, cb
+  userSchema.statics.create = (data) ->
+    data.startedAt = new Date()
+    data.testIndecies = _.shuffle([0...quizConfig.testQuestions.length])[...quizConfig.testQuestionsToShow]
+    data.codeAsignIndecies = _.shuffle([0...quizConfig.codeAssignments.length])[...quizConfig.codeAssignmentsToShow]
+    new User(data)
+
   userSchema.virtual('durationLeft').get ->
     res = Math.ceil (env.maxDuration - (Date.now() - @startedAt.getTime())) / 1000
     res = 0 if res < 0
@@ -61,7 +73,7 @@ db.once 'open', ->
       authEmail = githubUserMetadata.email
       User.findByEmail authEmail, (err, user) ->
         if err or not user
-          user = new User(email: authEmail)
+          user = User.create email: authEmail
           user.save (err, user) ->
             return promise.fail(err) if err
             promise.fulfill(user)
@@ -113,7 +125,14 @@ db.once 'open', ->
 
 
   app.get "/api/env", (req, res) ->
-    res.send env
+    userEnv = _.clone env
+    user = req.user
+    if user and not user.finished
+      userEnv.testQuestions = user.testIndecies.map (i) -> _.omit quizConfig.testQuestions[i], 'rightAnswer'
+      userEnv.codeAssignments = user.codeAsignIndecies.map (i) -> quizConfig.codeAssignments[i]
+      userEnv.creativeCodeAssignment = quizConfig.creativeCodeAssignment
+
+    res.send userEnv
 
   # start server
   http.createServer(app).listen app.get("port"), ->

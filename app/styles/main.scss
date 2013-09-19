@@ -138,6 +138,10 @@ body {
 }
 
 .breadcrumb{
+  > li + li:before{
+    content: "\f101";
+    font-family: "FontAwesome";
+  }
   height: 36px;
   li {
     color: $gray-light;
@@ -158,6 +162,7 @@ body {
       color: $gray-dark;
     }
   }
+
 }
 
 .container {
