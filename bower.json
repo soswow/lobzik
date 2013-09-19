@@ -8,7 +8,8 @@
     "backbone": "~1.0.0",
     "underscore": "~1.5.2",
     "momentjs": "~2.2.1",
-    "codemirror": "~3.16.0"
+    "codemirror": "~3.16.0",
+    "coffee-script": "~1.6.3"
   },
   "devDependencies": {}
 }

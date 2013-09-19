@@ -32,7 +32,10 @@
 </div>
 
 <div class="container">
-  <div class="alert"></div>
+  <div class="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <span class="msg"></span>
+  </div>
   <div id="loggedin-user">
     <span class="email"><i class="icon-github-sign"></i> soswow@gmail.com</span>
     <a class="logout" href="/logout"><i class="icon-signout"></i></a>
@@ -147,10 +150,10 @@
 </script>
 
 <script id="code-assignment-tmpl" type="text/html">
-  <div class="assignment <%= name %>">
+  <div class="assignment <%= name %>" data-name="<%= name %>">
     <div class="row relative">
       <div class="col-md-8"><%= description %></div>
-      <div class="col-md-4 at-bottom"><button class="btn btn-primary pull-right">Test your code</button></div>
+      <div class="col-md-4 at-bottom"><button class="test-code btn btn-primary pull-right">Test your code</button></div>
     </div>
     <textarea name="" id="" cols="30" rows="10"><%= placeholderCode %></textarea>
   </div>
@@ -163,6 +166,7 @@
 <script src="bower_components/momentjs/moment.js"></script>
 <script src="bower_components/codemirror/lib/codemirror.js"></script>
 <script src="bower_components/codemirror/mode/coffeescript/coffeescript.js"></script>
+<script src="bower_components/coffee-script/extras/coffee-script.js"></script>
 <!-- endbuild -->
 
 <!-- build:js(.tmp) scripts/main.js -->

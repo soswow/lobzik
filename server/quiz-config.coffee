@@ -39,21 +39,21 @@ module.exports =
       name: "foobar-game"
       description: "Let's play `foo-bar` game! Implement function that returns `foo` if given input divisible by 3 `bar` if divisible by 5 and `foobar` if divisible by 3 AND 5 otherwise return number itself."
       placeholderCode: "(num) -> #your code goes here"
-      testCase: (fun, assert) ->
-          answers = [0,1,2,'foo',4,'bar','foo',7,8,'foo','bar',11,'foo',13,14,'foobar']
+      testCase: ->
+          answers = ['foobar', 1, 2,'foo',4,'bar','foo',7,8,'foo','bar',11,'foo',13,14,'foobar']
           for ans, i in answers
-            assert fun(i), ans
+            @assert [i], ans
     }
     {
       name: "harder"
       description: "Implement a function that reverse a input string"
       placeholderCode: "(line) -> #your code goes here"
-      testCase: (fun, assert) ->
-        assert fun(''), ''
-        assert fun('a'), 'a'
-        assert fun('ab'), 'ba'
-        assert fun('abc'), 'cba'
-        assert fun('abcd'), 'dcba'
+      testCase: ->
+        @assert [''],  ''
+        @assert ['a'], 'a'
+        @assert ['ab'], 'ba'
+        @assert ['abc'], 'cba'
+        @assert ['abcd'], 'dcba'
     }
   ]
   creativeCodeAssignment:

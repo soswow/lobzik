@@ -82,6 +82,7 @@ class app.CodingView extends Backbone.View
   events:
     'click .pagination a.page': 'changeQuestionPage'
     'click .pagination a.next': 'nextQuestion'
+    'click .assignment button.test-code': 'testCode'
 
   paginatorTemplate: _.template $("#pagination-tmpl").html()
   assignmentTemplate: _.template $("#code-assignment-tmpl").html()
@@ -93,6 +94,19 @@ class app.CodingView extends Backbone.View
     else
       app.env.on 'change:codeAssignments', =>
         @renderAssignments()
+
+  testCode: (e) ->
+    $assignment = $(e.currentTarget).parents(".assignment")
+    name = $assignment.data "name"
+    assignment = _.find @codeAssignments, (as) -> as.name is name
+    coffeeScriptCode = @codeMirrors[name].getValue()
+    try
+      javascript = CoffeeScript.compile coffeeScriptCode, {bare:true}
+      assignment.userFun = eval(javascript)
+      assignment.testCase()
+    catch error
+      app.mainView.alert(error, "danger")
+    @codeMirrors[name].save()
 
   changeQuestionPage: (e) ->
     @currentAssignment = $(e.currentTarget).data "index"
@@ -152,6 +166,9 @@ class app.MainView extends Backbone.View
 
   el: "body > .container"
 
+  events:
+    'click .alert .close': 'closeAlert'
+
   initialize: ->
     _.bindAll @, 'drawTimeLeft'
     @$breadcrumb = @$('.breadcrumb')
@@ -184,10 +201,17 @@ class app.MainView extends Backbone.View
   hideLoader: ->
     $("#loader").removeClass 'show'
 
-  showAlert: (msg, type) ->
-    $box = $(".container > .alert").html(msg).addClass("alert-#{type} show")
-    setTimeout (-> $box.removeClass("show")), 4000
-    setTimeout (-> $box.removeClass("alert-#{type}")), 5000
+  alert: (msg, type) ->
+    $box = $(".container > .alert")
+      .removeClass('alert-danger alert-info alert-success')
+      .addClass("alert-#{type} show")
+      .find(".msg").html(msg)
+    unless type is 'danger'
+      setTimeout (-> $box.removeClass("show")), 4000
+
+  closeAlert: ->
+    $(".container > .alert").removeClass("show")
+    return false
 
   show: (viewName) ->
     @$breadcrumb.find(".step").removeClass("active").filter(".#{viewName}").addClass("active")

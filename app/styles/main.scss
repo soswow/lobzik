@@ -114,8 +114,18 @@ body {
     right: 15px;
     padding: 7px 15px;
     z-index: 50;
+
+    .close{
+      display: none;
+      margin-top: -2px;
+    }
     &.show{
       top: 38px;
+    }
+    &.alert-danger{
+      .close{
+        display: block;
+      }
     }
   }
 }
