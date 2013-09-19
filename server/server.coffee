@@ -11,10 +11,38 @@ db = mongoose.connection
 db.on 'error', console.error.bind console, 'connection error:'
 db.once 'open', ->
 
-  userSchema = mongoose.Schema
-    email: String
-    name: String
+  schemaOptions =
+    toObject:
+      virtuals: true
+    toJSON:
+      virtuals: true
+
+  userSchema = mongoose.Schema(
+    {
+      email: String
+      name: String
+      startedAt:
+        type: Date
+        'default': Date.now
+      finished:
+        type: Boolean
+        'default': false
+    }, schemaOptions
+  )
+
+
+  userSchema.methods.checkIfFinished = (cb) ->
+    if @durationLeft <= 0
+      @finished = true
+      @save cb
+    else
+      console.log(this)
+      cb null, this
+
+  maxDuration = 30 * 60 * 1000
   userSchema.statics.findByEmail = (email, cb) -> @findOne { email: email }, cb
+  userSchema.virtual('durationLeft').get ->
+    maxDuration - (Date.now() - @startedAt.getTime())
 
   User = mongoose.model 'User', userSchema
 
@@ -41,10 +69,13 @@ db.once 'open', ->
     redirectPath: '/'
 
   everyauth.everymodule.findUserById (userId, callback) ->
-    User.findById userId, callback
+    User.findById userId, (err, user) ->
+      callback(null) if err or not user
+      user.checkIfFinished callback
 
   app = express()
-
+  app.use express.static path.join( __dirname, '../../app')
+  app.use express.static path.join( __dirname, '..')
   app.use express.bodyParser()
   app.use express.cookieParser()
   app.use express.session secret: 'as8df7a76d5f67sd'
@@ -56,9 +87,6 @@ db.once 'open', ->
     app.use require('connect-livereload')(
       port: 35729
     )
-
-  app.use express.static path.join( __dirname, '../../app')
-  app.use express.static path.join( __dirname, '..')
 
 
 
@@ -76,7 +104,7 @@ db.once 'open', ->
   app.get "/api/user", (req, res) ->
     user = req.user
     if user
-      res.send user
+      res.send user.toJSON()
     else
       res.send 403, 'Not logged in'
 

@@ -1,71 +1,149 @@
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>testing framework</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        <!-- build:css(.tmp) styles/main.css -->
-        <link rel="stylesheet" href="styles/main.css">
-        <!-- endbuild -->
-    </head>
-    <body>
-        <!--[if lt IE 10]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>testing framework</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <!-- build:css(.tmp) styles/main.css -->
+  <link rel="stylesheet" href="styles/main.css">
+  <!-- endbuild -->
+</head>
+<body>
+<!--[if lt IE 10]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+  your browser</a> to improve your experience.</p>
+<![endif]-->
 
-        <div id="loader">
-          <div class="icon-refresh icon-spin"></div>
-        </div>
+<div id="loader">
+  <div class="icon-refresh icon-spin"></div>
+</div>
 
-        <div class="container">
-            <div id="login-screen" class="jumbotron screen">
-                <h1>Ready to start?</h1>
-                <p class="lead">Please login with one of true coders ways:</p>
-                <p><a class="btn btn-lg btn-primary" href="/auth/github"><i class="icon-github-sign"></i> GitHub</a>
-                  <a class="btn btn-lg btn-primary" href="#"><i class="icon-linkedin-sign"></i> LinkedIn</a> </p>
-                <p class="lead">or some other way:</p>
-              <p><a class="btn" href="#"><i class="icon-google-plus-sign"></i> Google</a> <a class="btn" href="#"><i class="icon-facebook-sign"></i> Facebook</a> </p>
-            </div>
+<div class="container">
+  <div id="loggedin-user">
+    <span class="email"><i class="icon-github-sign"></i> soswow@gmail.com</span>
+    <a class="logout" href="/logout"><i class="icon-signout"></i></a>
+  </div>
+  <ol class="breadcrumb">
+    <li class="step login" ><span>Login</span></li>
+    <li class="step test"><span>Test questions</span></li>
+    <li class="step "><span>Code assignment</span></li>
+    <li class="step result"><span>Result</span></li>
+    <li class="time "></li>
+  </ol>
 
-            <div id="logged-in-screen" class="screen">
-              <h1>Howdy <span class="email"></span></h1>
-            </div>
-        </div>
+  <div id="login" class="screen">
+    <div class="jumbotron">
+      <h1>Ready to start?</h1>
+
+      <p class="lead">Please login with one of true coders ways:</p>
+
+      <p><a class="btn btn-lg btn-primary" href="/auth/github"><i class="icon-github-sign"></i> GitHub</a>
+        <a class="btn btn-lg btn-primary" href="#"><i class="icon-linkedin-sign"></i> LinkedIn</a></p>
+
+      <p class="lead">or some other way:</p>
+
+      <p><a class="btn" href="#"><i class="icon-google-plus-sign"></i> Google</a> <a class="btn" href="#"><i
+          class="icon-facebook-sign"></i> Facebook</a></p>
+    </div>
+    <div class="row marketing">
+      <div class="col-lg-6">
+        <h4>What is behind login?</h4>
+
+        <p>Test consists of two parts:
+          <ul>
+            <li>standard test with predefined answers</li>
+            <li>code assignments</li>
+          </ul>
+        </p>
+      </div>
+      <div class="col-lg-6">
+        <h4>We love CoffeeScript</h4>
+
+        <p>In our company we use <a href="http://coffeescript.org">CoffeeScript</a>, that's why code assignments will use it.</p>
+      </div>
+    </div>
+    <div class="row marketing">
+      <div class="col-lg-6">
+        <h4>Any restrictions?</h4>
+
+        <p>There two things:
+          <ul>
+            <li>test is time limited to 25 min</li>
+            <li>code assignments</li>
+          </ul>
+        </p>
+      </div>
+      <!--<div class="col-lg-6">-->
+        <!--<h4>We love CoffeeScript</h4>-->
+        <!---->
+        <!--<p>In our company we use <a href="http://coffeescript.org">CoffeeScript</a>, that's why code assignments will use it.</p>-->
+      <!--</div>-->
+    </div>
+  </div>
+
+  <div id="test" class="screen">
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Test</h2>
+      </div>
+      <div class="col-md-6">
+        <ul class="pagination pull-right">
+          <li><a href="#">1</a></li>
+          <li class="active"><a href="#">2</a></li>
+          <li><a href="#">3</a></li>
+          <li><a href="#">4</a></li>
+          <li><a href="#">Next <i class="icon-arrow-right"></i></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="result" class="screen">
+    <div class="jumbotron">
+      <h1>And Results Are</h1>
+    </div>
+  </div>
+</div>
 
 
-        <!-- build:js scripts/vendor.js -->
-        <script src="bower_components/jquery/jquery.js"></script>
-        <script src="bower_components/underscore/underscore.js"></script>
-        <script src="bower_components/backbone/backbone.js"></script>
-        <!-- endbuild -->
+<!-- build:js scripts/vendor.js -->
+<script src="bower_components/jquery/jquery.js"></script>
+<script src="bower_components/underscore/underscore.js"></script>
+<script src="bower_components/backbone/backbone.js"></script>
+<script src="bower_components/momentjs/moment.js"></script>
+<!-- endbuild -->
 
-        <!-- build:js(.tmp) scripts/main.js -->
-        <script src="scripts/init.js"></script>
-        <script src="scripts/view.js"></script>
-        <script src="scripts/model.js"></script>
-        <script src="scripts/router.js"></script>
-        <script src="scripts/start.js"></script>
-        <!-- endbuild -->
+<!-- build:js(.tmp) scripts/main.js -->
+<script src="scripts/init.js"></script>
+<script src="scripts/view.js"></script>
+<script src="scripts/model.js"></script>
+<script src="scripts/router.js"></script>
+<script src="scripts/start.js"></script>
+<!-- endbuild -->
 
-        <!-- build:js scripts/plugins.js -->
-        <script src="bower_components/sass-bootstrap/js/affix.js"></script>
-        <script src="bower_components/sass-bootstrap/js/alert.js"></script>
-        <script src="bower_components/sass-bootstrap/js/dropdown.js"></script>
-        <script src="bower_components/sass-bootstrap/js/tooltip.js"></script>
-        <script src="bower_components/sass-bootstrap/js/modal.js"></script>
-        <script src="bower_components/sass-bootstrap/js/transition.js"></script>
-        <script src="bower_components/sass-bootstrap/js/button.js"></script>
-        <script src="bower_components/sass-bootstrap/js/popover.js"></script>
-        <script src="bower_components/sass-bootstrap/js/carousel.js"></script>
-        <script src="bower_components/sass-bootstrap/js/scrollspy.js"></script>
-        <script src="bower_components/sass-bootstrap/js/collapse.js"></script>
-        <script src="bower_components/sass-bootstrap/js/tab.js"></script>
-        <!-- endbuild -->
+<!-- build:js scripts/plugins.js -->
+<script src="bower_components/sass-bootstrap/js/affix.js"></script>
+<script src="bower_components/sass-bootstrap/js/alert.js"></script>
+<script src="bower_components/sass-bootstrap/js/dropdown.js"></script>
+<script src="bower_components/sass-bootstrap/js/tooltip.js"></script>
+<script src="bower_components/sass-bootstrap/js/modal.js"></script>
+<script src="bower_components/sass-bootstrap/js/transition.js"></script>
+<script src="bower_components/sass-bootstrap/js/button.js"></script>
+<script src="bower_components/sass-bootstrap/js/popover.js"></script>
+<script src="bower_components/sass-bootstrap/js/carousel.js"></script>
+<script src="bower_components/sass-bootstrap/js/scrollspy.js"></script>
+<script src="bower_components/sass-bootstrap/js/collapse.js"></script>
+<script src="bower_components/sass-bootstrap/js/tab.js"></script>
+<!-- endbuild -->
 </body>
 </html>

@@ -1,20 +1,32 @@
 class app.Router extends Backbone.Router
   routes:
-    "search/:query":  "index"
-    "search/:query/p:page": "index"
-    "*path":  "index"
+#    "search/:query":  "index"
+#    "search/:query/p:page": "index"
+#    "login":  "login"
+#    "test":  "test"
+#    "result":  "result"
+    "*path":  "redirect"
 
-  index: ->
-    console.log "index"
-    unless app.user.id
+  redirectUser: (page) ->
+    if app.user.get('finished')
+      @navigate 'result'
+      app.mainView.show 'result'
+    else
+      @navigate 'test'
+      app.mainView.show 'test'
+
+  redirect: (page) ->
+    if app.user.id
+      @redirectUser page
+    else
       app.mainView.showLoader()
       app.user.fetch
-        success: ->
+        success: =>
           app.mainView.hideLoader()
-          app.mainView.show 'testing'
-#          $("#logged-in-screen").show().find('.email').text(data.email)
-        error: ->
+          @redirectUser page
+        error: =>
           app.mainView.hideLoader()
+          @navigate 'login'
           app.mainView.show 'login'
 
 app.router = new app.Router()
