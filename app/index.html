@@ -153,9 +153,9 @@
   <div class="assignment <%= name %>" data-name="<%= name %>">
     <div class="row relative">
       <div class="col-md-8"><%= description %></div>
-      <div class="col-md-4 at-bottom"><button class="test-code btn btn-primary pull-right">Test your code</button></div>
+      <div class="col-md-4 at-bottom"><button class="test-code btn btn-primary pull-right">Test and save your code</button></div>
     </div>
-    <textarea name="" id="" cols="30" rows="10"><%= placeholderCode %></textarea>
+    <textarea class="code name-<%= name %>" name="" id="" cols="30" rows="10"><%= solution || placeholderCode %></textarea>
   </div>
 </script>
 

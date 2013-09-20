@@ -89,6 +89,9 @@ class app.CodingView extends Backbone.View
 
   initialize: ->
     @currentAssignment = 1
+    app.user.on 'change:codeSolutions', =>
+      for name, {code:code} of app.user.get('codeSolutions')
+        @codeMirrors[name].setValue(code)
     if app.env.has 'codeAssignments'
       @renderAssignments()
     else
@@ -100,13 +103,23 @@ class app.CodingView extends Backbone.View
     name = $assignment.data "name"
     assignment = _.find @codeAssignments, (as) -> as.name is name
     coffeeScriptCode = @codeMirrors[name].getValue()
+    pass = false
     try
       javascript = CoffeeScript.compile coffeeScriptCode, {bare:true}
       assignment.userFun = eval(javascript)
       assignment.testCase()
+      app.mainView.alert "It works! Cool!", "success"
+      pass = true
     catch error
-      app.mainView.alert(error, "danger")
+      message =
+        if error.message
+          lineInfo = "line: #{error.location?.first_line} col: #{error.location?.first_column}" if error.location
+          error.message + (lineInfo or "")
+        else
+          error
+      app.mainView.alert message, "danger"
     @codeMirrors[name].save()
+    app.user.updateCodeSolution name, @codeMirrors[name].getValue(), pass
 
   changeQuestionPage: (e) ->
     @currentAssignment = $(e.currentTarget).data "index"
@@ -140,12 +153,15 @@ class app.CodingView extends Backbone.View
     $assignments = @$(".assignments").empty()
     @codeMirrors = {}
     for assignment in @codeAssignments
-      $assignment = $ @assignmentTemplate assignment
+      $assignment = $ @assignmentTemplate _.extend assignment,
+        solution: app.user.get('codeSolutions')[assignment.name]
       $assignments.append $assignment
       @codeMirrors[assignment.name] = CodeMirror.fromTextArea $assignment.find("textarea").get(0),
           value: assignment.placeholderCode
           mode: 'coffeescript'
           tabSize: 2
+          indentUnit: 2
+          indentWithTabs: true
           lineNumbers: true
     @showCurrentAssignment()
 
@@ -202,12 +218,12 @@ class app.MainView extends Backbone.View
     $("#loader").removeClass 'show'
 
   alert: (msg, type) ->
-    $box = $(".container > .alert")
+    $(".container > .alert")
       .removeClass('alert-danger alert-info alert-success')
       .addClass("alert-#{type} show")
       .find(".msg").html(msg)
     unless type is 'danger'
-      setTimeout (-> $box.removeClass("show")), 4000
+      setTimeout @closeAlert, 4000
 
   closeAlert: ->
     $(".container > .alert").removeClass("show")

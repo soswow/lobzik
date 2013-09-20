@@ -1,6 +1,9 @@
 class app.User extends Backbone.Model
   modelName: 'user'
 
+  defaults:
+    codeSolutions: {}
+
   url: '/api/user'
 
   initialize: ->
@@ -21,11 +24,18 @@ class app.User extends Backbone.Model
     data.startedAt = new Date(data.startedAt)
     super data, options
 
+  updateCodeSolution: (name, code, pass) ->
+    solutions = @get 'codeSolutions'
+    solutions[name] =
+      code: code
+      pass: pass
+    @save codeSolutions: solutions
+
 assert = (args, output) ->
   throw "No user function" unless @userFun
   actual = @userFun.apply(this, args)
   if actual isnt output
-    throw "For arguments #{args}: #{output} was expected, but got #{actual}"
+    throw "For arguments [\"#{args.join("\",\"")}\"]: \"#{output}\" was expected, but got \"#{actual}\""
 
 class app.Environment extends Backbone.Model
   modelName: 'user'

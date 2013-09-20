@@ -32,6 +32,7 @@ db.once 'open', ->
         'default': false
       testIndecies: [Number]
       codeAsignIndecies: [Number]
+      codeSolutions: mongoose.Schema.Types.Mixed
     }, schemaOptions
   )
 
@@ -48,6 +49,10 @@ db.once 'open', ->
     data.startedAt = new Date()
     data.testIndecies = _.shuffle([0...quizConfig.testQuestions.length])[...quizConfig.testQuestionsToShow]
     data.codeAsignIndecies = _.shuffle([0...quizConfig.codeAssignments.length])[...quizConfig.codeAssignmentsToShow]
+    data.codeSolutions = {}
+    for idx in data.codeAsignIndecies
+      name = quizConfig.codeAssignments[idx].name
+      data.codeSolutions[name] = []
     new User(data)
 
   userSchema.virtual('durationLeft').get ->
@@ -108,14 +113,34 @@ db.once 'open', ->
   app.get '/', (req, res) ->
     res.sendfile path.join( __dirname, '../../app/index.html')
 
+  sendUserJSON = (user, res) ->
+    userObj = _.omit user.toObject(), '__v', '_id', 'testIndecies', 'codeAsignIndecies'
+    userObj.codeSolutions = {}
+    for name, solutions of user.codeSolutions
+      userObj.codeSolutions[name] = _.last solutions
+    res.send JSON.stringify(userObj)
 
   app.get "/api/user", (req, res) ->
     user = req.user
     if user
-      res.send user.toJSON()
+      sendUserJSON user, res
     else
       res.send 403, 'Not logged in'
 
+  app.put "/api/user", (req, res) ->
+    codeSolutions = req.body?.codeSolutions or {}
+    console.log codeSolutions
+    for name, {code:code, pass:pass} of codeSolutions
+      console.log name, code, pass
+      lastSolution = _.last req.user.codeSolutions[name]
+      console.log lastSolution
+      console.log not lastSolution or lastSolution.code isnt code
+      if not lastSolution or lastSolution.code isnt code
+        req.user.codeSolutions[name].push code:code, pass:pass
+        req.user.markModified('codeSolutions')
+#    req.user.codeSol
+    req.user.save ->
+      sendUserJSON req.user, res
 
   app.get "/api/env", (req, res) ->
     userEnv = _.clone env
