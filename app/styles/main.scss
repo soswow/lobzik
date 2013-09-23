@@ -224,6 +224,9 @@ body {
 #test{
   .question{
     display: none;
+    label{
+      font-weight: normal;
+    }
   }
 }
 

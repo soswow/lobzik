@@ -16,6 +16,7 @@ class app.TestView extends Backbone.View
   events:
     'click .pagination a.page': 'changeQuestionPage'
     'click .pagination a.next': 'nextQuestion'
+    'click .question .options input': 'giveAnswer'
 
   paginatorTemplate: _.template $("#pagination-tmpl").html()
   questionTemplate: _.template $("#test-question-tmpl").html()
@@ -31,6 +32,12 @@ class app.TestView extends Backbone.View
 
     app.user.on 'change:id', =>
       @renderUser()
+      @putAnswers()
+
+  putAnswers: ->
+    for name, indicies of app.user.get('testAnswers')
+      for index in indicies
+        @$(".question.#{name} input.index-#{index}").prop "checked", true
 
   renderUser: ->
     app.mainView.startTimer()
@@ -66,8 +73,17 @@ class app.TestView extends Backbone.View
     @renderPaginator()
     $questions = @$(".questions").empty()
     for question in @questions
-      $questions.append @questionTemplate question
+      $questions.append @questionTemplate _.extend question, answers: app.user.testAnswers?[question.name] or []
     @showCurrentQuestion()
+
+  giveAnswer: (e) ->
+    $question = $(e.currentTarget).parents(".question")
+    $checkboxes = $question.find("input:checkbox:checked")
+    name = $question.data "name"
+    indecies = $checkboxes.map (idx, el) -> $(el).data("index")
+    testAnswers = app.user.get("testAnswers")
+    testAnswers[name] = indecies.get()
+    app.user.save testAnswers: testAnswers
 
 
 class app.TestQuestionView extends Backbone.View
@@ -107,8 +123,9 @@ class app.CodingView extends Backbone.View
     try
       javascript = CoffeeScript.compile coffeeScriptCode, {bare:true}
       assignment.userFun = eval(javascript)
-      assignment.testCase()
-      app.mainView.alert "It works! Cool!", "success"
+      if assignment.testCase
+        assignment.testCase()
+        app.mainView.alert "It works! Cool!", "success"
       pass = true
     catch error
       message =
@@ -201,6 +218,11 @@ class app.MainView extends Backbone.View
   drawTimeLeft: ->
     boldStart = "<span class='bold'>"
     dur = moment.duration app.user.get('durationLeft') * 1000
+    if dur is 60
+      @alert "One minute left! When it's gone all unsaved data will be lost!", "warning"
+    if dur is 0
+      @alert "Time's up!", "info"
+      return app.router.navigate 'result', trigger: true
     padZero = (num) -> (num < 10 and "0" or "") + num
     time = [padZero(dur.hours()), (dur.minutes() > 0 and boldStart or "") +
     padZero(dur.minutes()), (dur.minutes() is 0 and boldStart or "") +

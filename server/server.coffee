@@ -33,6 +33,7 @@ db.once 'open', ->
       testIndecies: [Number]
       codeAsignIndecies: [Number]
       codeSolutions: mongoose.Schema.Types.Mixed
+      testAnswers: mongoose.Schema.Types.Mixed
     }, schemaOptions
   )
 
@@ -49,10 +50,17 @@ db.once 'open', ->
     data.startedAt = new Date()
     data.testIndecies = _.shuffle([0...quizConfig.testQuestions.length])[...quizConfig.testQuestionsToShow]
     data.codeAsignIndecies = _.shuffle([0...quizConfig.codeAssignments.length])[...quizConfig.codeAssignmentsToShow]
+
     data.codeSolutions = {}
     for idx in data.codeAsignIndecies
       name = quizConfig.codeAssignments[idx].name
       data.codeSolutions[name] = []
+    data.codeSolutions[quizConfig.creativeCodeAssignment.name] = []
+
+    data.testAnswers = {}
+    for idx in data.testIndecies
+      name = quizConfig.testQuestions[idx].name
+      data.testAnswers[name] = []
     new User(data)
 
   userSchema.virtual('durationLeft').get ->
@@ -120,31 +128,46 @@ db.once 'open', ->
       userObj.codeSolutions[name] = _.last solutions
     res.send JSON.stringify(userObj)
 
+#  user = null
+
+  #
+#  email = "soswow@fake.com"
+#  User.findByEmail email, (err, _user) ->
+#    if err or not _user
+#      user = User.create email: email
+#      user.save(->)
+#    else
+#      user = _user
+
+  getUser = (req) -> req.user
+
   app.get "/api/user", (req, res) ->
-    user = req.user
+    user = getUser req
     if user
       sendUserJSON user, res
     else
       res.send 403, 'Not logged in'
 
   app.put "/api/user", (req, res) ->
+    user = getUser req
     codeSolutions = req.body?.codeSolutions or {}
-    console.log codeSolutions
     for name, {code:code, pass:pass} of codeSolutions
-      console.log name, code, pass
-      lastSolution = _.last req.user.codeSolutions[name]
-      console.log lastSolution
-      console.log not lastSolution or lastSolution.code isnt code
+      lastSolution = _.last user.codeSolutions[name]
       if not lastSolution or lastSolution.code isnt code
-        req.user.codeSolutions[name].push code:code, pass:pass
-        req.user.markModified('codeSolutions')
-#    req.user.codeSol
-    req.user.save ->
-      sendUserJSON req.user, res
+        user.codeSolutions[name].push code:code, pass:pass
+        user.markModified('codeSolutions')
+
+    testAnswers = req.body?.testAnswers or {}
+    for name, answers of testAnswers
+      user.testAnswers[name] = answers
+      user.markModified 'testAnswers'
+
+    user.save ->
+      sendUserJSON user, res
 
   app.get "/api/env", (req, res) ->
     userEnv = _.clone env
-    user = req.user
+    user = getUser req
     if user and not user.finished
       userEnv.testQuestions = user.testIndecies.map (i) -> _.omit quizConfig.testQuestions[i], 'rightAnswer'
       userEnv.codeAssignments = user.codeAsignIndecies.map (i) ->

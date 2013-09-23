@@ -1,5 +1,5 @@
 module.exports =
-  maxDuration: 5000000
+  maxDuration: 1000 * 60 * 10
   testQuestionsToShow: 2
   codeAssignmentsToShow: 2
   testQuestions: [
@@ -61,9 +61,14 @@ module.exports =
     description: """
                  Wanna prove you are The Best? </br>
                  Prove it! Draw us a fireworks! Make it awesome!
-                 <canvas id='awesome-canvas'></canvas>
+                 <canvas id='awesome-canvas' height='300' width='480'></canvas>
                  """
     placeholderCode: """
-                     canvas = document.getElementById '#awesome-canvas'
+                     canvas = document.getElementById 'awesome-canvas'
+                     console.log canvas
                      ctx = canvas.getContext '2d'
-                     #your code goes here"""
+                     #your code goes here and bellow
+                     ctx.moveTo 0, 0
+                     ctx.lineTo 100,100
+                     ctx.stroke()
+                     """

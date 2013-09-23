@@ -137,12 +137,12 @@
 </script>
 
 <script id="test-question-tmpl" type="text/html">
-  <div class="row question <%= name %>">
+  <div class="row question <%= name %>" data-name="<%= name %>">
     <div class="col-md-4"><%= description %></div>
     <div class="col-md-8">
-      <ul class="list-unstyled">
+      <ul class="list-unstyled options">
         <% _.each(options, function(option, i){ %>
-          <li><label><input type="checkbox"/> <%= option %></label></li>
+          <li><label><input class="option <%= name %> index-<%= i %>" type="checkbox" data-question-name="<%= name %>" data-index="<%= i %>"/> <%= option %></label></li>
         <% }) %>
       </ul>
     </div>
