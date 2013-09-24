@@ -1,5 +1,5 @@
 module.exports =
-  maxDuration: 1000 * 60 * 10
+  maxDuration: 1000 * 60 * 100
   testQuestionsToShow: 2
   codeAssignmentsToShow: 2
   testQuestions: [

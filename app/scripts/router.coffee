@@ -9,9 +9,11 @@ class app.Router extends Backbone.Router
 
   redirectUser: (page) ->
     if app.user.get('finished')
+      app.mainView.removeMenuLinks()
       @navigate 'result'
       app.mainView.show 'result'
     else
+      app.mainView.addMenuLinks()
       unless page in ['test', 'coding']
         page = 'test'
         console.log "navigating to #{page}"
