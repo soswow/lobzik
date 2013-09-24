@@ -29,7 +29,10 @@ class app.TestView extends Backbone.View
 
   renderUser: ->
     app.mainView.startTimer()
-    $("#loggedin-user").show().find(".email").text app.user.get('email')
+    safeEmail = app.user.escape 'email'
+    authProvider = app.user.get 'authProvider'
+    $("#loggedin-user").show().find(".email").html "<i class='icon-#{authProvider}-sign'></i> #{safeEmail}"
+    $("#finish-button").show()
 
   renderPaginator: ->
     @$('.pagination-js').html @paginatorTemplate

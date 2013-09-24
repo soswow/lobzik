@@ -1,4 +1,5 @@
 $FontAwesomePath: 'font';
+$border-radius-large: 4px;
 @import 'compass/css3';
 @import 'sass-bootstrap/lib/bootstrap';
 @import 'font-awesome/scss/font-awesome';
@@ -79,7 +80,7 @@ body {
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
     .container {
-        max-width: 730px;
+        max-width: 970px;
     }
 
     /* Remove the padding we set earlier */
@@ -196,10 +197,11 @@ body {
 
 #loggedin-user{
   display: none;
-  position: absolute;
+  //position: absolute;
   padding: 8px 15px;
-  width: 210px;
-  right: -210px;
+  margin-bottom: $line-height-computed;
+  //width: 210px;
+  //right: -210px;
   background-color: #f5f5f5;
   border-radius: 4px;
   .email{
@@ -219,6 +221,10 @@ body {
       text-decoration: none;
     }
   }
+}
+
+#finish-button {
+  display: none;
 }
 
 #test{
@@ -253,4 +259,23 @@ body {
   width: 480px;
   margin-top: $padding-base-vertical * 3;
   border: 1px dashed gray;
+}
+#test, #coding{
+  margin-top: -21px;
+}
+.pagination{
+  .page.done:after{
+    //content: "\f05d";
+    content: "\f058";
+    font-family: FontAwesome;
+    color: $brand-success;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 17px;
+    top: -15px;
+    right: -2px;
+    z-index: 1000;
+    @include text-shadow(0 0 4px white, 0 0 4px white,0 0 4px white,0 0 4px white,0 0 4px white);
+  }
 }

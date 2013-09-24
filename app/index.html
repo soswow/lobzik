@@ -36,101 +36,107 @@
     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
     <span class="msg"></span>
   </div>
-  <div id="loggedin-user">
-    <span class="email"><i class="icon-github-sign"></i> soswow@gmail.com</span>
-    <a class="logout" href="/logout"><i class="icon-signout"></i></a>
-  </div>
-  <ol class="breadcrumb">
-    <li class="step login"><span>Login</span></li>
-    <li class="step test"><span>Test questions</span></li>
-    <li class="step coding"><span>Code assignment</span></li>
-    <li class="step result"><span>Result</span></li>
-    <li class="time "></li>
-  </ol>
 
-  <div id="login" class="screen">
-    <div class="jumbotron">
-      <h1>Ready to start?</h1>
+  <div class="col-md-8">
+    <ol class="breadcrumb">
+      <li class="step login"><span>Login</span></li>
+      <li class="step test"><span>Test questions</span></li>
+      <li class="step coding"><span>Code assignment</span></li>
+      <li class="step result"><span>Result</span></li>
+      <li class="time "></li>
+    </ol>
 
-      <p class="lead">Please login with one of true coders ways:</p>
+    <div id="login" class="screen">
+      <div class="jumbotron">
+        <h1>Ready to start?</h1>
 
-      <p><a class="btn btn-lg btn-primary" href="/auth/github"><i class="icon-github-sign"></i> GitHub</a>
-        <a class="btn btn-lg btn-primary" href="#"><i class="icon-linkedin-sign"></i> LinkedIn</a></p>
+        <p class="lead">Please login with one of true coders ways:</p>
 
-      <p class="lead">or some other way:</p>
+        <p><a class="btn btn-lg btn-primary" href="/auth/github"><i class="icon-github-sign"></i> GitHub</a>
+          <a class="btn btn-lg btn-primary" href="#"><i class="icon-linkedin-sign"></i> LinkedIn</a></p>
 
-      <p><a class="btn" href="#"><i class="icon-google-plus-sign"></i> Google</a> <a class="btn" href="#"><i
-          class="icon-facebook-sign"></i> Facebook</a></p>
-    </div>
-    <div class="row marketing">
-      <div class="col-lg-6">
-        <h4>What is behind login?</h4>
+        <p class="lead">or some other way:</p>
 
-        <p>Test consists of two parts:
+        <p><a class="btn" href="#"><i class="icon-google-plus-sign"></i> Google</a> <a class="btn" href="#"><i
+            class="icon-facebook-sign"></i> Facebook</a></p>
+      </div>
+      <div class="row marketing">
+        <div class="col-lg-6">
+          <h4>What is behind login?</h4>
+
+          <p>Test consists of two parts:
           <ul>
             <li>standard test with predefined answers</li>
             <li>code assignments</li>
           </ul>
-        </p>
-      </div>
-      <div class="col-lg-6">
-        <h4>We love CoffeeScript</h4>
+          </p>
+        </div>
+        <div class="col-lg-6">
+          <h4>We love CoffeeScript</h4>
 
-        <p>In our company we use <a href="http://coffeescript.org">CoffeeScript</a>, that's why code assignments will use it.</p>
+          <p>In our company we use <a href="http://coffeescript.org">CoffeeScript</a>, that's why code assignments will use it.</p>
+        </div>
       </div>
-    </div>
-    <div class="row marketing">
-      <div class="col-lg-6">
-        <h4>Any restrictions?</h4>
+      <div class="row marketing">
+        <div class="col-lg-6">
+          <h4>Any restrictions?</h4>
 
-        <p>There two things:
+          <p>There two things:
           <ul>
             <li>test is time limited to 25 min</li>
             <li>code assignments</li>
           </ul>
-        </p>
-      </div>
-      <!--<div class="col-lg-6">-->
+          </p>
+        </div>
+        <!--<div class="col-lg-6">-->
         <!--<h4>We love CoffeeScript</h4>-->
         <!---->
         <!--<p>In our company we use <a href="http://coffeescript.org">CoffeeScript</a>, that's why code assignments will use it.</p>-->
-      <!--</div>-->
-    </div>
-  </div>
-
-  <div id="test" class="screen">
-    <div class="row">
-      <div class="col-md-6">
-        <h2>Test</h2>
+        <!--</div>-->
       </div>
-      <div class="col-md-6 pagination-js"></div>
     </div>
-    <div class="questions">
-    </div>
-  </div>
 
-  <div id="coding" class="screen">
-    <div class="row">
-      <div class="col-md-6">
-        <h2>Code</h2>
+    <div id="test" class="screen">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Test</h2>
+        </div>
+        <div class="col-md-6 pagination-js"></div>
       </div>
-      <div class="col-md-6 pagination-js"></div>
+      <div class="questions">
+      </div>
     </div>
-    <div class="assignments">
+
+    <div id="coding" class="screen">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Code</h2>
+        </div>
+        <div class="col-md-6 pagination-js"></div>
+      </div>
+      <div class="assignments">
+      </div>
+    </div>
+
+    <div id="result" class="screen">
+      <div class="jumbotron">
+        <h1>And Results Are</h1>
+      </div>
     </div>
   </div>
-
-  <div id="result" class="screen">
-    <div class="jumbotron">
-      <h1>And Results Are</h1>
+  <div class="col-md-4">
+    <div id="loggedin-user">
+      <span class="email">soswow@gmail.com</span>
+      <a class="logout" href="/logout"><i class="icon-signout"></i></a>
     </div>
+    <button id="finish-button" class=" btn btn-success btn-block btn-lg">Finish test!</button>
   </div>
 </div>
 
 <script id="pagination-tmpl" type="text/html">
   <ul class="pagination pull-right">
     <% for(var i=1;i<=max;i++) { %>
-      <li <% if(i===current){%> class="active" <%}%> ><a class="page" href="#" data-index='<%= i %>'><%= labels[i-1] || i  %></a></li>
+      <li <% if(i===current){%> class="active" <%}%> ><a class="page done" href="#" data-index='<%= i %>'><%= labels[i-1] || i  %></a></li>
     <% } %>
     <li><a href="#" class="next"><%= nextLabel %> <i class="icon-arrow-right" style="margin-left: 5px"></i></a></li>
   </ul>
