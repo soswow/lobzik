@@ -1,39 +1,45 @@
 class app.Router extends Backbone.Router
   routes:
-#    "search/:query":  "index"
-#    "search/:query/p:page": "index"
-#    "login":  "login"
-#    "test":  "test"
-#    "result":  "result"
-    "*path":  "redirect"
+    'login': 'login'
+    'test': 'test'
+    'coding': 'coding'
+    'result': 'result'
+    '*path':  'login'
 
-  redirectUser: (page) ->
-    if app.user.get('finished')
-      app.mainView.removeMenuLinks()
-      @navigate 'result'
-      app.mainView.show 'result'
-    else
-      app.mainView.addMenuLinks()
-      unless page in ['test', 'coding']
-        page = 'test'
-        console.log "navigating to #{page}"
-        @navigate page
-      app.mainView.show page
+  goto: (page) -> @navigate page, trigger: true
 
-  redirect: (page) ->
-    console.log "routing #{page}"
-    if app.user.id
-      @redirectUser page
-    else
+  securedPage: (cb) ->
+    unless app.user.id
       app.mainView.showLoader()
       app.user.fetch
-        success: =>
+        success: ->
           app.mainView.hideLoader()
-          app.env.fetch()
-          @redirectUser page
+          cb()
         error: =>
-          app.mainView.hideLoader()
-          @navigate 'login'
           app.mainView.show 'login'
+          @navigate 'login'
+          app.mainView.hideLoader()
+    else
+      cb()
+
+  testAndCoding: (page) ->
+    @securedPage =>
+      unless app.user.get('finished')
+        app.mainView.addMenuLinks()
+        app.mainView.show page
+      else
+        @goto 'result'
+
+  login: -> @testAndCoding 'test'
+  test: -> @testAndCoding 'test'
+  coding: -> @testAndCoding 'coding'
+
+  result: ->
+    @securedPage =>
+      if app.user.get('finished')
+        app.mainView.removeMenuLinks()
+        app.mainView.show 'result'
+      else
+        @goto 'test'
 
 app.router = new app.Router()

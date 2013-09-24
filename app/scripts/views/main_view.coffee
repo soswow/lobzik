@@ -55,6 +55,8 @@ class app.MainView extends Backbone.View
     return false
 
   show: (viewName) ->
+    console.log viewName
+    app.env.fetch() unless app.env.has 'testQuestions'
     @$breadcrumb.find(".step").removeClass("active").filter(".#{viewName}").addClass("active")
     for name, view of @views
       if name is viewName
