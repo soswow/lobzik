@@ -1,6 +1,6 @@
 module.exports =
   maxDuration: 1000 * 60 * 100
-  testQuestionsToShow: 2
+  testQuestionsToShow: 4
   codeAssignmentsToShow: 3
   testQuestions: [
     {
@@ -11,7 +11,7 @@ module.exports =
         "No I was sitting here minding my own business when the crazy thing jumped into my pail."
         "No it's a plastic model to get people like you to start fascinating conversations."
       ]
-      rightAnswer: 2
+      rightAnswers: [2, 1]
     }
     {
       name: "question-two"
@@ -21,7 +21,7 @@ module.exports =
         "wrong answer 2"
         "right answer"
       ]
-      rightAnswer: 2
+      rightAnswers: [2]
     }
     {
       name: "question-three"
@@ -31,7 +31,65 @@ module.exports =
         "wrong answer 2"
         "right answer"
       ]
-      rightAnswer: 2
+      rightAnswers: [0,2]
+    }
+    {
+      name: "iterator-question"
+      description: """
+                   Look at the given CSS. We view the pages two different ways.
+                   <ul>
+                    <li>In a browser window with width of 720px, and height of 1000px;</li>
+                    <li>In a Retina display iPhone (resolution [640 × 960])</li>
+                  </ul>
+
+                   What is the height and padding of the header element in both cases?
+                   What is the font-size of the h2 element in both cases?
+
+                   <pre class="brush: scss; tab-size: 2; smart-tabs: false">
+header {
+  background: #2a3d4b;
+  padding: 10px;
+  overflow: hidden;
+  height: 45px;
+}
+.main-list{
+  margin:0;
+  width:auto;
+}
+.main-list > li {
+  margin: 0 10px;
+}
+h2{
+  font-size:12px;
+}
+@media only screen and (max-width: 800px) {
+  ul.main-list{
+    margin:0 -10px;
+  }
+  .main-list > li {
+    margin: 0 10px;
+  }
+  header {
+    padding: 8px;
+    height: 50px;
+  }
+}
+@media screen and (min-height: 350px) {
+  header {
+    height: 55px;
+  }
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+  h2{
+    font-size:14px;
+  }
+  header {
+    height: 60px;
+  }
+}
+</pre>"""
+      cloze: "<div class='cloze-line'>header height in browser is {0} px</div><div class='cloze-line'>h2 font-size in iPhone is {1} px</div>"
+      answers: [55, 14]
     }
   ]
   codeAssignments: [

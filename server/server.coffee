@@ -178,7 +178,7 @@ db.once 'open', ->
     userEnv = _.clone env
     user = req.user
     if user and not user.finished
-      userEnv.testQuestions = user.testIndecies.map (i) -> _.omit quizConfig.testQuestions[i], 'rightAnswer'
+      userEnv.testQuestions = user.testIndecies.map (i) -> _.omit quizConfig.testQuestions[i], 'rightAnswers'
       userEnv.codeAssignments = user.codeAsignIndecies.map (i) ->
         question = _.clone quizConfig.codeAssignments[i]
         question.testCase = question.testCase?.toString()

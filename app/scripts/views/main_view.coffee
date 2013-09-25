@@ -55,6 +55,14 @@ class app.MainView extends Backbone.View
     $(".alert").removeClass("show")
     return false
 
+  hideSidebar: ->
+    $(".container > .content").removeClass("col-md-8").addClass("col-md-12")
+    $(".container > .right-side").hide()
+
+  showSidebar: ->
+    $(".container > .content").removeClass("col-md-12").addClass("col-md-8")
+    $(".container > .right-side").show()
+
   show: (viewName) ->
     console.log viewName
     app.env.fetch() unless app.env.has 'testQuestions'

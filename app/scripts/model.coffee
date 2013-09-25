@@ -52,6 +52,9 @@ class app.Environment extends Backbone.Model
         assignment.testCase = _.bind eval("(" + assignment.testCase + ")"), assignment
     super data, options
 
+  questionsByName: (name) ->
+    @get('codeAssignments')[name] or _.findWhere(@get('testQuestions'), name: name)
+
   allCodeAssignments: ->
     _.extend @get('codeAssignments'), @get('creativeCodeAssignment')
 

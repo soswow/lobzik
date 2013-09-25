@@ -16,6 +16,8 @@
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
   <!-- build:css(.tmp) styles/main.css -->
   <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="bower_components/SyntaxHighlighter/styles/shCore.css">
+  <link rel="stylesheet" href="bower_components/SyntaxHighlighter/styles/shThemeDefault.css">
   <!-- endbuild -->
   <!-- build:css styles/code-theme.css -->
   <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css">
@@ -32,7 +34,7 @@
 </div>
 
 <div class="container">
-  <div class="col-md-8">
+  <div class="col-md-8 content">
     <ol class="breadcrumb">
       <li class="step login"><span>Login</span></li>
       <li class="step test"><span>Test questions</span></li>
@@ -119,7 +121,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4 right-side">
     <div id="loggedin-user">
       <span class="email">soswow@gmail.com</span>
       <a class="logout" href="/logout"><i class="icon-signout"></i></a>
@@ -143,13 +145,22 @@
 
 <script id="test-question-tmpl" type="text/html">
   <div class="row question <%= name %>" data-name="<%= name %>">
-    <div class="col-md-4"><%= description %></div>
-    <div class="col-md-8">
-      <ul class="list-unstyled options">
-        <% _.each(options, function(option, i){ %>
-          <li><label><input class="option <%= name %> index-<%= i %>" type="checkbox" data-question-name="<%= name %>" data-index="<%= i %>"/> <%= option %></label></li>
-        <% }) %>
-      </ul>
+    <div class="col-md-12">
+      <%= description %>
+
+      <div class="your-answer">
+        <% if (options) { %>
+          <ul class="list-unstyled options">
+            <% _.each(options, function(option, i){ %>
+              <li><label><input class="option <%= name %> index-<%= i %>" type="checkbox" data-question-name="<%= name %>" data-index="<%= i %>"/> <%= option %></label></li>
+            <% }) %>
+          </ul>
+        <% } %>
+
+        <% if (cloze) { %>
+          <%= cloze %>
+        <% } %>
+      </div>
     </div>
   </div>
 </script>
@@ -178,6 +189,12 @@
 <script src="bower_components/codemirror/lib/codemirror.js"></script>
 <script src="bower_components/codemirror/mode/coffeescript/coffeescript.js"></script>
 <script src="bower_components/coffee-script/extras/coffee-script.js"></script>
+<script src="bower_components/SyntaxHighlighter/scripts/XRegExp.js"></script>
+<script src="bower_components/SyntaxHighlighter/scripts/shCore.js"></script>
+<script src="bower_components/SyntaxHighlighter/scripts/shBrushCss.js"></script>
+<script src="bower_components/SyntaxHighlighter/scripts/shBrushSass.js"></script>
+<script src="bower_components/SyntaxHighlighter/scripts/shBrushJScript.js"></script>
+
 <!-- endbuild -->
 
 <!-- build:js(.tmp) scripts/main.js -->

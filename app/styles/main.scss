@@ -235,6 +235,16 @@ body {
     label{
       font-weight: normal;
     }
+    .your-answer{
+      margin-top: $line-height-computed;
+    }
+    .cloze-line{
+      margin-bottom: $line-height-computed / 2;
+      input.cloze{
+        width: 50px;
+        display: inline-block;
+      }
+    }
   }
 }
 
@@ -282,3 +292,9 @@ body {
     }
   }
 }
+
+
+
+
+
+

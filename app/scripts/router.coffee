@@ -26,6 +26,7 @@ class app.Router extends Backbone.Router
     @securedPage =>
       unless app.user.get('finished')
         app.mainView.addMenuLinks()
+        app.mainView.showSidebar()
         app.mainView.show page
         @navigate page
       else
@@ -39,6 +40,7 @@ class app.Router extends Backbone.Router
     @securedPage =>
       if app.user.get('finished')
         app.mainView.removeMenuLinks()
+        app.mainView.showSidebar()
         app.mainView.show 'result'
       else
         @goto 'test'
