@@ -135,9 +135,9 @@
 
 <script id="pagination-tmpl" type="text/html">
   <ul class="pagination pull-right">
-    <% for(var i=1;i<=max;i++) { %>
-      <li <% if(i===current){%> class="active" <%}%> ><a class="page done" href="#" data-index='<%= i %>'><%= labels[i-1] || i  %></a></li>
-    <% } %>
+    <% _.each(questions, function(question, i){ %>
+      <li <% if(i===current){%> class="active" <%}%> ><a class="page <%= question.name %> <%= doneClass(question) %>" href="#" data-index='<%= i %>'><%= labels[question.name] || i + 1  %></a></li>
+    <% }) %>
     <li><a href="#" class="next"><%= nextLabel %> <i class="icon-arrow-right" style="margin-left: 5px"></i></a></li>
   </ul>
 </script>

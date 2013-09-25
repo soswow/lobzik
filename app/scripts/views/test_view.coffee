@@ -11,7 +11,7 @@ class app.TestView extends Backbone.View
 
   questions: []
   initialize: ->
-    @currentQuestion = 1
+    @currentQuestion = 0
     if app.env.has 'testQuestions'
       @renderQuestions()
     else
@@ -22,10 +22,21 @@ class app.TestView extends Backbone.View
       @renderUser()
       @putAnswers()
 
+    app.user.on 'change:testAnswers', =>
+      @renderPaginator()
+
   putAnswers: ->
     for name, indicies of app.user.get('testAnswers')
       for index in indicies
         @$(".question.#{name} input.index-#{index}").prop "checked", true
+#      if indicies.length > 0
+#        question = _.findWhere app.user.get('testQuestions'), name: name
+
+#  markDone: ->
+#    @$(".pagination a").removeClass 'done'
+#    for [name, indicies], i in _.pairs app.user.get('testAnswers') when indicies.length
+#      question = _.findWhere app.user.get('testQuestions'), name: name
+#      @$(".pagination a[data-index=#{i}]").addClass 'done'
 
   renderUser: ->
     app.mainView.startTimer()
@@ -36,7 +47,8 @@ class app.TestView extends Backbone.View
 
   renderPaginator: ->
     @$('.pagination-js').html @paginatorTemplate
-      max: @questions.length
+      questions: @questions
+      doneClass: (question) -> app.user.get('testAnswers')?[question.name]?.length > 0 and 'done' or ''
       current: @currentQuestion
       labels: []
       nextLabel: 'Next'
@@ -48,7 +60,7 @@ class app.TestView extends Backbone.View
     return false
 
   nextQuestion: ->
-    if @currentQuestion is @questions.length
+    if @currentQuestion is @questions.length - 1
       app.router.navigate 'coding', trigger: true
     else
       @currentQuestion += 1
@@ -57,7 +69,7 @@ class app.TestView extends Backbone.View
     return false
 
   showCurrentQuestion: ->
-    @$(".questions .question").hide().filter("." + @questions[@currentQuestion-1].name).show()
+    @$(".questions .question").hide().filter("." + @questions[@currentQuestion].name).show()
 
   renderQuestions: ->
     @questions = app.env.get('testQuestions')
@@ -72,6 +84,6 @@ class app.TestView extends Backbone.View
     $checkboxes = $question.find("input:checkbox:checked")
     name = $question.data "name"
     indecies = $checkboxes.map (idx, el) -> $(el).data("index")
-    testAnswers = app.user.get("testAnswers")
+    testAnswers = _.clone app.user.get("testAnswers")
     testAnswers[name] = indecies.get()
     app.user.save testAnswers: testAnswers

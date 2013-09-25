@@ -11,7 +11,7 @@ class app.CodingView extends Backbone.View
   assignmentTemplate: _.template $("#code-assignment-tmpl").html()
 
   initialize: ->
-    @currentAssignment = 1
+    @currentAssignment = 0
     app.user.on 'change:codeSolutions', =>
       for name, {code:code} of app.user.get('codeSolutions')
         @codeMirrors[name].setValue(code)
@@ -62,13 +62,14 @@ class app.CodingView extends Backbone.View
 
   renderPaginator: ->
     @$('.pagination-js').html @paginatorTemplate
-      max: @codeAssignments.length
+      questions: @codeAssignments
+      doneClass: (question) -> app.user.get('codeSolutions')?[question.name]?.length > 0 and 'done' or ''
       current: @currentAssignment
-      labels: ['Easy', 'Hard', 'Creative']
+      labels: []
       nextLabel: 'Next'
 
   showCurrentAssignment: ->
-    @$(".assignments .assignment").hide().filter("." + @codeAssignments[@currentAssignment-1].name).show()
+    @$(".assignments .assignment").hide().filter("." + @codeAssignments[@currentAssignment].name).show()
     @render()
 
   renderAssignments: ->

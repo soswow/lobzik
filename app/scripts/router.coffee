@@ -27,6 +27,7 @@ class app.Router extends Backbone.Router
       unless app.user.get('finished')
         app.mainView.addMenuLinks()
         app.mainView.show page
+        @navigate page
       else
         @goto 'result'
 
