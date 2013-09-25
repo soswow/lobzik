@@ -27,6 +27,7 @@ db.once 'open', ->
       email: String
       name: String
       startedAt: Date
+      durationTook: Number
       finished:
         type: Boolean
         'default': false
@@ -40,6 +41,7 @@ db.once 'open', ->
 
   userSchema.methods.checkIfFinished = (cb) ->
     if @durationLeft <= 0
+      @durationTook = env.maxDuration
       @finished = true
       @save cb
     else
@@ -122,13 +124,18 @@ db.once 'open', ->
     res.sendfile path.join( __dirname, '../../app/index.html')
 
   sendUserJSON = (user, res) ->
-    userObj = _.omit user.toObject(), '__v', '_id', 'testIndecies', 'codeAsignIndecies'
-    userObj.codeSolutions = {}
-    for name, solutions of user.codeSolutions
-      userObj.codeSolutions[name] = _.last solutions
-    res.send JSON.stringify(userObj)
+    omitFields = ['__v', '_id', 'testIndecies', 'codeAsignIndecies']
+    if user.finished
+      omitFields = omitFields.concat ['testAnswers', 'codeSolutions']
 
-#  user = null
+    userObj = _.omit user.toObject(), omitFields...
+
+    unless user.finished
+      userObj.codeSolutions = {}
+      for name, solutions of user.codeSolutions
+        userObj.codeSolutions[name] = _.last solutions
+
+    res.send JSON.stringify(userObj)
 
   #
 #  email = "soswow@fake.com"
@@ -139,17 +146,15 @@ db.once 'open', ->
 #    else
 #      user = _user
 
-  getUser = (req) -> req.user
-
   app.get "/api/user", (req, res) ->
-    user = getUser req
+    user = req.user
     if user
       sendUserJSON user, res
     else
       res.send 403, 'Not logged in'
 
   app.put "/api/user", (req, res) ->
-    user = getUser req
+    user = req.user
     codeSolutions = req.body?.codeSolutions or {}
     for name, {code:code, pass:pass} of codeSolutions
       lastSolution = _.last user.codeSolutions[name]
@@ -162,12 +167,16 @@ db.once 'open', ->
       user.testAnswers[name] = answers
       user.markModified 'testAnswers'
 
+    if req.body?.finished and not user.finished
+      user.durationTook = env.maxDuration - user.durationLeft
+      user.finished = true
+
     user.save ->
       sendUserJSON user, res
 
   app.get "/api/env", (req, res) ->
     userEnv = _.clone env
-    user = getUser req
+    user = req.user
     if user and not user.finished
       userEnv.testQuestions = user.testIndecies.map (i) -> _.omit quizConfig.testQuestions[i], 'rightAnswer'
       userEnv.codeAssignments = user.codeAsignIndecies.map (i) ->

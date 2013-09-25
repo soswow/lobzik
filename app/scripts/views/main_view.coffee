@@ -4,6 +4,7 @@ class app.MainView extends Backbone.View
 
   events:
     'click .alert .close': 'closeAlert'
+    'click #finish-button': 'finishTest'
 
   initialize: ->
     _.bindAll @, 'drawTimeLeft'
@@ -73,3 +74,8 @@ class app.MainView extends Backbone.View
   removeMenuLinks: ->
     if @$breadcrumb.find('a').length
       @$breadcrumb.find('.test span, .coding span').unwrap()
+
+  finishTest: ->
+    if confirm("There is no way back. Are you sure you are ready?")
+      app.mainView.showLoader()
+      app.user.save finished: true

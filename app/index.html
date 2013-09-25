@@ -157,10 +157,14 @@
 <script id="code-assignment-tmpl" type="text/html">
   <div class="assignment <%= name %>" data-name="<%= name %>">
     <div class="row">
-      <%= description %>
+      <div class="col-md-12">
+        <%= description %>
+      </div>
     </div>
     <div class="row">
-      <button class="test-code btn btn-primary pull-right">Test and save your code</button>
+      <div class="col-md-12">
+        <button class="test-code btn btn-primary pull-right">Test and save your code</button>
+      </div>
     </div>
     <textarea class="code name-<%= name %>" name="" id="" cols="30" rows="10"><%= solution || placeholderCode %></textarea>
   </div>
