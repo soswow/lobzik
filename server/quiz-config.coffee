@@ -1,7 +1,7 @@
 module.exports =
   maxDuration: 1000 * 60 * 100
   testQuestionsToShow: 2
-  codeAssignmentsToShow: 2
+  codeAssignmentsToShow: 3
   testQuestions: [
     {
       name: "q-1"
@@ -35,6 +35,13 @@ module.exports =
     }
   ]
   codeAssignments: [
+    {
+      name: "hello-world"
+      description: "Gimme 'Hello World'"
+      placeholderCode: " -> #your code goes here"
+      testCase: ->
+        @assert null, "Hello World"
+    }
     {
       name: "foobar-game"
       description: "Let's play `foo-bar` game! Implement function that returns `foo` if given input divisible by 3 `bar` if divisible by 5 and `foobar` if divisible by 3 AND 5 otherwise return number itself."

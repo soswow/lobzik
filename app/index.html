@@ -32,11 +32,6 @@
 </div>
 
 <div class="container">
-  <div class="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-    <span class="msg"></span>
-  </div>
-
   <div class="col-md-8">
     <ol class="breadcrumb">
       <li class="step login"><span>Login</span></li>
@@ -130,6 +125,10 @@
       <a class="logout" href="/logout"><i class="icon-signout"></i></a>
     </div>
     <button id="finish-button" class=" btn btn-success btn-block btn-lg">Finish test!</button>
+    <div class="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <span class="msg"></span>
+    </div>
   </div>
 </div>
 
@@ -157,9 +156,11 @@
 
 <script id="code-assignment-tmpl" type="text/html">
   <div class="assignment <%= name %>" data-name="<%= name %>">
-    <div class="row relative">
-      <div class="col-md-8"><%= description %></div>
-      <div class="col-md-4 at-bottom"><button class="test-code btn btn-primary pull-right">Test and save your code</button></div>
+    <div class="row">
+      <%= description %>
+    </div>
+    <div class="row">
+      <button class="test-code btn btn-primary pull-right">Test and save your code</button>
     </div>
     <textarea class="code name-<%= name %>" name="" id="" cols="30" rows="10"><%= solution || placeholderCode %></textarea>
   </div>

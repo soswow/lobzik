@@ -43,7 +43,7 @@ class app.MainView extends Backbone.View
     $("#loader").removeClass 'show'
 
   alert: (msg, type) ->
-    $(".container > .alert")
+    $(".alert")
       .removeClass('alert-danger alert-info alert-success')
       .addClass("alert-#{type} show")
       .find(".msg").html(msg)
@@ -51,7 +51,7 @@ class app.MainView extends Backbone.View
       setTimeout @closeAlert, 4000
 
   closeAlert: ->
-    $(".container > .alert").removeClass("show")
+    $(".alert").removeClass("show")
     return false
 
   show: (viewName) ->

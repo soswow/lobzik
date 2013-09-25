@@ -15,6 +15,8 @@ class app.CodingView extends Backbone.View
     app.user.on 'change:codeSolutions', =>
       for name, {code:code} of app.user.get('codeSolutions')
         @codeMirrors[name].setValue(code)
+        @renderPaginator()
+
     if app.env.has 'codeAssignments'
       @renderAssignments()
     else
@@ -52,8 +54,9 @@ class app.CodingView extends Backbone.View
     return false
 
   nextQuestion: ->
-    if @currentAssignment is @codeAssignments.length
-      app.router.navigate 'result', trigger: true
+    if @currentAssignment is @codeAssignments.length - 1
+      $("#finish-button").focus()
+      app.mainView.alert 'Click Finish Test if you fill so. ;-)', 'info'
     else
       @currentAssignment += 1
       @renderPaginator()
@@ -63,7 +66,8 @@ class app.CodingView extends Backbone.View
   renderPaginator: ->
     @$('.pagination-js').html @paginatorTemplate
       questions: @codeAssignments
-      doneClass: (question) -> app.user.get('codeSolutions')?[question.name]?.length > 0 and 'done' or ''
+      doneClass: (question) ->
+        app.user.get('codeSolutions')?[question.name]?.pass and 'done' or ''
       current: @currentAssignment
       labels: []
       nextLabel: 'Next'

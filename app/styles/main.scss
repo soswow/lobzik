@@ -107,25 +107,26 @@ body {
 .container {
   position: relative;
 
-  > .alert{
-    @include transition(top 0.5s);
-    position: absolute;
-    top: 0;
-    left: 15px;
-    right: 15px;
+  .alert{
+    //@include transition(left 0.5s);
+    //position: absolute;
+    //top: 0;
+    //left: 15px;
+    //right: 15px;
     padding: 7px 15px;
     z-index: 50;
-
+    display: none;
     .close{
       display: none;
-      margin-top: -2px;
+      //margin-top: -2px;
     }
     &.show{
-      top: 38px;
-    }
-    &.alert-danger{
-      .close{
-        display: block;
+      display: block;
+      //top: 38px;
+      &.alert-danger{
+        .close{
+          display: block;
+        }
       }
     }
   }
@@ -225,6 +226,7 @@ body {
 
 #finish-button {
   display: none;
+  margin-bottom: $line-height-computed;
 }
 
 #test{
@@ -240,6 +242,9 @@ body {
   .CodeMirror{
     margin-top: $padding-base-vertical * 3;
     border-top: 1px solid lightgray;
+  }
+  button.test-code{
+    margin-top: $padding-base-vertical * 2;
   }
 }
 

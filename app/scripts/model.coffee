@@ -25,7 +25,7 @@ class app.User extends Backbone.Model
     super data, options
 
   updateCodeSolution: (name, code, pass) ->
-    solutions = @get 'codeSolutions'
+    solutions = _.clone @get 'codeSolutions'
     solutions[name] =
       code: code
       pass: pass
@@ -35,7 +35,7 @@ assert = (args, output) ->
   throw "No user function" unless @userFun
   actual = @userFun.apply(this, args)
   if actual isnt output
-    throw "For arguments [\"#{args.join("\",\"")}\"]: \"#{output}\" was expected, but got \"#{actual}\""
+    throw "For arguments [\"#{args and args.join("\",\"")}\"]: \"#{output}\" was expected, but got \"#{actual}\""
 
 class app.Environment extends Backbone.Model
   modelName: 'user'
@@ -51,6 +51,9 @@ class app.Environment extends Backbone.Model
         assignment.assert = assert
         assignment.testCase = _.bind eval("(" + assignment.testCase + ")"), assignment
     super data, options
+
+  allCodeAssignments: ->
+    _.extend @get('codeAssignments'), @get('creativeCodeAssignment')
 
 app.env = new app.Environment()
 app.env.fetch()

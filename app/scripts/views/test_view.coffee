@@ -29,14 +29,6 @@ class app.TestView extends Backbone.View
     for name, indicies of app.user.get('testAnswers')
       for index in indicies
         @$(".question.#{name} input.index-#{index}").prop "checked", true
-#      if indicies.length > 0
-#        question = _.findWhere app.user.get('testQuestions'), name: name
-
-#  markDone: ->
-#    @$(".pagination a").removeClass 'done'
-#    for [name, indicies], i in _.pairs app.user.get('testAnswers') when indicies.length
-#      question = _.findWhere app.user.get('testQuestions'), name: name
-#      @$(".pagination a[data-index=#{i}]").addClass 'done'
 
   renderUser: ->
     app.mainView.startTimer()
