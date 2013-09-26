@@ -16,6 +16,9 @@ class app.MainView extends Backbone.View
       result: new app.ResultView()
     @$time = @$breadcrumb.find(".time").show()
 
+    app.user.on 'change:finished', ->
+      app.router.navigate('result', trigger:true) if app.user.get('finished')
+
   startTimer: ->
     app.user.on 'change:durationLeft', @drawTimeLeft, this
 
@@ -86,4 +89,4 @@ class app.MainView extends Backbone.View
   finishTest: ->
     if confirm("There is no way back. Are you sure you are ready?")
       app.mainView.showLoader()
-      app.user.save finished: true
+      app.user.save {finished: true}, success: => @hideLoader()

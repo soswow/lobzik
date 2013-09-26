@@ -35,12 +35,22 @@ db.once 'open', ->
       codeAsignIndecies: [Number]
       codeSolutions: mongoose.Schema.Types.Mixed
       testAnswers: mongoose.Schema.Types.Mixed
+      result:
+        test:
+          totalScore: Number
+          normScore: Number
+          rightAnswers: Number
+          notGivenRightAnswers: Number
+          wrongAnswers: Number
+        coding:
+          rightSolutions: Number
+          wrongSolutions: Number
     }, schemaOptions
   )
 
 
   userSchema.methods.checkIfFinished = (cb) ->
-    if @durationLeft <= 0
+    if @durationLeft <= 0 and not @finished
       @durationTook = env.maxDuration
       @finished = true
       @save cb
@@ -64,6 +74,63 @@ db.once 'open', ->
       name = quizConfig.testQuestions[idx].name
       data.testAnswers[name] = []
     new User(data)
+
+  # My personal formula. I think it works the best
+  scoreFormula = (answeredRight, answeredWrong, totalRight, totalWrong) ->
+    console.log "Score", answeredRight/totalRight, '-', answeredWrong/(totalWrong + 1)
+    answeredRight/totalRight - answeredWrong/(totalWrong + 1)
+
+  userSchema.methods.finishUser = ->
+    @durationTook = env.maxDuration - @durationLeft * 1000
+    @finished = true
+    totalScore = 0
+    totalRightAnswers = 0
+    totalWrongAnswers = 0
+    notGivenRightAnswers = 0
+    for idx in @testIndecies
+      question = quizConfig.testQuestions[idx]
+      name = question.name
+      rightAnswersNumber = question.rightAnswers.length
+      givenAnswers = @testAnswers[name]
+      rightGivenAnswers = _.intersection givenAnswers, question.rightAnswers
+      console.log name, givenAnswers, rightGivenAnswers, question.rightAnswers
+      rightGivenAnswersNumber = rightGivenAnswers.length
+      rightNotGivenAnswersNumber = rightAnswersNumber - rightGivenAnswersNumber
+
+      [wrongGivenAnswersNumber, wrongAnswersNumber] = if question.cloze
+        [rightAnswersNumber - rightGivenAnswersNumber,
+         rightAnswersNumber]
+      else
+        wrongAnswers = _.difference [0...question.options.length], question.rightAnswers
+        wrongGivenAnswers = _.intersection givenAnswers, wrongAnswers
+        console.log wrongAnswers, wrongGivenAnswers
+        [wrongGivenAnswers.length, wrongAnswers.length]
+
+
+      console.log "rightGiAnNum=" + rightGivenAnswersNumber,
+        "rightAnNum=" + rightAnswersNumber,
+        "wrongGiAnNumr=" + wrongGivenAnswersNumber,
+        "wrongAnNum=" + wrongAnswersNumber,
+        "notGiRightAn=" + notGivenRightAnswers
+
+      score = scoreFormula rightGivenAnswersNumber,
+        wrongGivenAnswersNumber,
+        rightAnswersNumber,
+        wrongAnswersNumber
+
+      totalScore += score
+      totalRightAnswers += rightGivenAnswersNumber
+      totalWrongAnswers += wrongGivenAnswersNumber
+      notGivenRightAnswers += rightNotGivenAnswersNumber
+
+    @result.test =
+      totalScore: totalScore
+      normScore: totalScore / @testIndecies.length #Normilized (Average) score. From -xx to 1
+      rightAnswers: totalRightAnswers
+      wrongAnswers: totalWrongAnswers
+      notGivenRightAnswers: notGivenRightAnswers
+
+    @markModified('result')
 
   userSchema.virtual('durationLeft').get ->
     res = Math.ceil (env.maxDuration - (Date.now() - @startedAt.getTime())) / 1000
@@ -97,13 +164,15 @@ db.once 'open', ->
     User.findById userId, (err, user) ->
       return callback(null) if err or not user
       user.checkIfFinished callback
+#
+#  everyauth.everymodule.logoutRedirectPath '/'
 
   app = express()
 
   app.configure 'development', ->
     app.use require('connect-livereload')(
       port: 35729
-      excludeList: ['/auth', '.js', '.css', '.svg', '.ico', '.woff', '.png', '.jpg', '.jpeg']
+      excludeList: ['/logout', '/auth', '.js', '.css', '.svg', '.ico', '.woff', '.png', '.jpg', '.jpeg']
     )
 
   app.use express.json()
@@ -125,8 +194,10 @@ db.once 'open', ->
 
   sendUserJSON = (user, res) ->
     omitFields = ['__v', '_id', 'testIndecies', 'codeAsignIndecies']
-    if user.finished
-      omitFields = omitFields.concat ['testAnswers', 'codeSolutions']
+    omitFields = omitFields.concat if user.finished
+      ['codeSolutions', 'testAnswers']
+    else
+      ['result']
 
     userObj = _.omit user.toObject(), omitFields...
 
@@ -137,14 +208,6 @@ db.once 'open', ->
 
     res.send JSON.stringify(userObj)
 
-  #
-#  email = "soswow@fake.com"
-#  User.findByEmail email, (err, _user) ->
-#    if err or not _user
-#      user = User.create email: email
-#      user.save(->)
-#    else
-#      user = _user
 
   app.get "/api/user", (req, res) ->
     user = req.user
@@ -152,6 +215,7 @@ db.once 'open', ->
       sendUserJSON user, res
     else
       res.send 403, 'Not logged in'
+
 
   app.put "/api/user", (req, res) ->
     user = req.user
@@ -168,10 +232,10 @@ db.once 'open', ->
       user.markModified 'testAnswers'
 
     if req.body?.finished and not user.finished
-      user.durationTook = env.maxDuration - user.durationLeft
-      user.finished = true
+      user.finishUser()
 
-    user.save ->
+    user.save (err, user) ->
+      return res.send 400, err if err
       sendUserJSON user, res
 
   app.get "/api/env", (req, res) ->

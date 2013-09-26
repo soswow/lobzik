@@ -3,4 +3,5 @@ class app.ResultView extends Backbone.View
 
   render: ->
     app.mainView.stopTimer()
+    $("#finish-button").hide()
     $("#loggedin-user").show().find(".email").text app.user.get('email')

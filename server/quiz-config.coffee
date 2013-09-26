@@ -31,7 +31,7 @@ module.exports =
         "wrong answer 2"
         "right answer"
       ]
-      rightAnswers: [0,2]
+      rightAnswers: [0, 2]
     }
     {
       name: "iterator-question"
@@ -89,7 +89,7 @@ h2{
 }
 </pre>"""
       cloze: "<div class='cloze-line'>header height in browser is {0} px</div><div class='cloze-line'>h2 font-size in iPhone is {1} px</div>"
-      answers: [55, 14]
+      rightAnswers: ['55', '14']
     }
   ]
   codeAssignments: [

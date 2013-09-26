@@ -32,7 +32,7 @@ class app.TestView extends Backbone.View
         if app.env.questionsByName(name)?.cloze
           @$(".question.#{name} input.cloze.#{idx}").val answer
         else
-          @$(".question.#{name} input.index-#{index}").prop "checked", true
+          @$(".question.#{name} input.index-#{answer}").prop "checked", true
 
   renderUser: ->
     app.mainView.startTimer()
