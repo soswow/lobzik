@@ -51,8 +51,8 @@ db.once 'open', ->
 
   userSchema.methods.checkIfFinished = (cb) ->
     if @durationLeft <= 0 and not @finished
+      @finishUser()
       @durationTook = env.maxDuration
-      @finished = true
       @save cb
     else
       cb null, this

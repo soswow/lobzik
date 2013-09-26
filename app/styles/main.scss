@@ -292,7 +292,19 @@ body {
     }
   }
 }
-
+#result{
+  .score{
+    font-size: 56px;
+    line-height: 56px;
+  }
+  .dense{
+    line-height: 22px;
+    font-size: 18px;
+  }
+  .number{
+    font-weight: 600;
+  }
+}
 
 
 
