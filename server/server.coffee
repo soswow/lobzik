@@ -208,14 +208,16 @@ db.once 'open', ->
 
     res.send JSON.stringify(userObj)
 
+  app.all '/api/user', (req, res, next) ->
+    if req.user
+      next()
+    else
+      res.send(403, 'Not logged in')
+
 
   app.get "/api/user", (req, res) ->
     user = req.user
-    if user
-      sendUserJSON user, res
-    else
-      res.send 403, 'Not logged in'
-
+    sendUserJSON user, res
 
   app.put "/api/user", (req, res) ->
     user = req.user
