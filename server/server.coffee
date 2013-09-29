@@ -27,6 +27,9 @@ db.once 'open', ->
     {
       email: String
       name: String
+      avatar: String
+      url: String
+      authType: String
       startedAt: Date
       durationTook: Number
       finished:
@@ -158,11 +161,11 @@ db.once 'open', ->
 
   User = mongoose.model 'User', userSchema
 
-  findOrCreateUser = (authEmail) ->
+  findOrCreateUser = (userInfo) ->
     promise = @Promise()
-    User.findByEmail authEmail, (err, user) ->
+    User.findByEmail userInfo.email, (err, user) ->
       if err or not user
-        user = User.create email: authEmail
+        user = User.create userInfo
         user.save (err, user) ->
           return promise.fail(err) if err
           promise.fulfill(user)
@@ -178,7 +181,13 @@ db.once 'open', ->
     scope: ''
     userPkey: '_id'
     findOrCreateUser: (session, accessToken, accessTokenExtra, githubUserMetadata) ->
-      findOrCreateUser.call this, githubUserMetadata.email
+      console.log githubUserMetadata
+      findOrCreateUser.call this,
+        email: githubUserMetadata.email
+        avatar: githubUserMetadata.avatar_url
+        url: githubUserMetadata.url
+        name: githubUserMetadata.name
+        authType: 'github'
     redirectPath: '/'
 
 
@@ -190,10 +199,16 @@ db.once 'open', ->
     userPkey: '_id'
 #    fields: 'id,first-name,last-name,email-address,public-profile-url'
     findOrCreateUser: (session, accessToken, accessTokenExtra, userMetadata) ->
-      findOrCreateUser.call this, userMetadata.emailAddress
+      console.log userMetadata
+      findOrCreateUser.call this,
+        email: userMetadata.emailAddress
+        avatar: userMetadata.pictureUrl
+        url: userMetadata.publicProfileUrl
+        name: userMetadata.firstName + ' ' + userMetadata.lastName
+        authType: 'linkedin'
     fetchOAuthUser: (accessToken, accessTokenSecret) ->
       promise = @Promise()
-      fields = 'id,first-name,last-name,email-address,public-profile-url'
+      fields = 'id,picture-url,first-name,last-name,email-address,public-profile-url'
       @oauth.get "#{@apiHost()}/people/~:(#{fields})", accessToken, accessTokenSecret, (err, data, res) ->
         if err
           err.extra = data: data, res: res

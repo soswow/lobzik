@@ -136,8 +136,7 @@
   </div>
   <div class="col-md-4 right-side">
     <div id="loggedin-user">
-      <span class="email"></span>
-      <a class="logout" href="/logout"><i class="icon-signout"></i></a>
+
     </div>
     <button id="finish-button" class=" btn btn-success btn-block btn-lg">Finish test!</button>
     <div class="alert">
@@ -207,6 +206,14 @@
     </div>
     <textarea class="code name-<%= name %>" name="" id="" cols="30" rows="10"><%= solution || placeholderCode %></textarea>
   </div>
+</script>
+
+<script id="user-info-tmpl" type="text/html">
+  <img src="<%= avatar %>" alt="<%- name %> avatar" class="pull-left avatar"/>
+  <span class="name"><%- name %></span>
+  <span class="email"><%- email %></span>
+  <!--<i class='icon-#{authType}-sign'></i> -->
+  <a class="logout btn btn-xs btn-default" href="/logout">Logout</a>
 </script>
 
 <!-- build:js scripts/vendor.js -->

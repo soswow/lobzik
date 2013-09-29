@@ -6,6 +6,8 @@ class app.MainView extends Backbone.View
     'click .alert .close': 'closeAlert'
     'click #finish-button': 'finishTest'
 
+  userInfoTemplate: _.template $("#user-info-tmpl").html()
+
   initialize: ->
     _.bindAll @, 'drawTimeLeft'
     @$breadcrumb = @$('.breadcrumb')
@@ -18,6 +20,10 @@ class app.MainView extends Backbone.View
 
     app.user.on 'change:finished', ->
       app.router.navigate('result', trigger:true) if app.user.get('finished')
+
+    app.user.on 'change:id', =>
+      app.mainView.startTimer()
+      app.mainView.renderUser()
 
   startTimer: ->
     app.user.on 'change:durationLeft', @drawTimeLeft, this
@@ -92,3 +98,11 @@ class app.MainView extends Backbone.View
       app.user.save {finished: true},
         wait: true
         success: => @hideLoader()
+
+  renderUser: ->
+#    safeEmail = app.user.escape 'email'
+#    authProvider = app.user.get 'authType'
+    avatar = app.user.get 'avatar'
+    $("#loggedin-user").show().html @userInfoTemplate app.user.attributes
+    unless app.user.get 'finished'
+      $("#finish-button").show()

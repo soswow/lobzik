@@ -20,7 +20,6 @@ class app.TestView extends Backbone.View
         @renderQuestions()
 
     app.user.on 'change:id', =>
-      @renderUser()
       @putAnswers()
 
     app.user.on 'change:testAnswers', =>
@@ -34,13 +33,7 @@ class app.TestView extends Backbone.View
         else
           @$(".question.#{name} input.index-#{answer}").prop "checked", true
 
-  renderUser: ->
-    app.mainView.startTimer()
-    safeEmail = app.user.escape 'email'
-    authProvider = app.user.get 'authProvider'
-    $("#loggedin-user").show().find(".email").html "<i class='icon-#{authProvider}-sign'></i> #{safeEmail}"
-    unless app.user.get 'finished'
-      $("#finish-button").show()
+
 
   renderPaginator: ->
     @$('.pagination-js').html @paginatorTemplate
