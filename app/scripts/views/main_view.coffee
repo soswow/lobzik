@@ -89,4 +89,6 @@ class app.MainView extends Backbone.View
   finishTest: ->
     if confirm("There is no way back. Are you sure you are ready?")
       app.mainView.showLoader()
-      app.user.save {finished: true}, success: => @hideLoader()
+      app.user.save {finished: true},
+        wait: true
+        success: => @hideLoader()

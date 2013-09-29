@@ -83,6 +83,8 @@ db.once 'open', ->
   userSchema.methods.finishUser = ->
     @durationTook = env.maxDuration - @durationLeft * 1000
     @finished = true
+
+    # Making TEST results
     totalScore = 0
     totalRightAnswers = 0
     totalWrongAnswers = 0
@@ -129,6 +131,19 @@ db.once 'open', ->
       rightAnswers: totalRightAnswers
       wrongAnswers: totalWrongAnswers
       notGivenRightAnswers: notGivenRightAnswers
+
+    #make Coding result
+    rightSolutions = 0
+    for idx in @codeAsignIndecies
+      codeAssignment = quizConfig.codeAssignments[idx]
+      name = codeAssignment.name
+      goodSolution = _.findWhere @codeSolutions[name], pass: true
+      rightSolutions += 1 if goodSolution
+    wrongSolutions = @codeAsignIndecies.length - rightSolutions
+
+    @result.coding =
+      rightSolutions: rightSolutions
+      wrongSolutions: wrongSolutions
 
     @markModified('result')
 
@@ -234,6 +249,7 @@ db.once 'open', ->
       user.markModified 'testAnswers'
 
     if req.body?.finished and not user.finished
+      console.log "finishUser"
       user.finishUser()
 
     user.save (err, user) ->
