@@ -96,14 +96,18 @@ h2{
     {
       name: "hello-world"
       description: "Gimme 'Hello World'"
-      placeholderCode: " -> #your code goes here"
+      placeholderCode:
+        coffeescript: " -> #your code goes here"
+        javascript: "function(){\n\t//your code goes here\n}"
       testCase: ->
         @assert null, "Hello World"
     }
     {
       name: "foobar-game"
       description: "Let's play `foo-bar` game! Implement function that returns `foo` if given input divisible by 3 `bar` if divisible by 5 and `foobar` if divisible by 3 AND 5 otherwise return number itself."
-      placeholderCode: "(num) -> #your code goes here"
+      placeholderCode:
+        coffeescript: "(num) -> #your code goes here"
+        javascript: "function(num){\n\t//your code goes here\n}"
       testCase: ->
           answers = ['foobar', 1, 2,'foo',4,'bar','foo',7,8,'foo','bar',11,'foo',13,14,'foobar']
           for ans, i in answers
@@ -112,7 +116,9 @@ h2{
     {
       name: "harder"
       description: "Implement a function that reverse a input string"
-      placeholderCode: "(line) -> #your code goes here"
+      placeholderCode:
+        coffeescript: "(line) -> #your code goes here"
+        javascript: "function(line){\n\t//your code goes here\n}"
       testCase: ->
         @assert [''],  ''
         @assert ['a'], 'a'
@@ -128,7 +134,8 @@ h2{
                  Prove it! Draw us a fireworks! Make it awesome!
                  <canvas id='awesome-canvas' height='300' width='480'></canvas>
                  """
-    placeholderCode: """
+    placeholderCode:
+      coffeescript: """
                      canvas = document.getElementById 'awesome-canvas'
                      console.log canvas
                      ctx = canvas.getContext '2d'
@@ -137,3 +144,12 @@ h2{
                      ctx.lineTo 100,100
                      ctx.stroke()
                      """
+      javascript: """
+                       var canvas = document.getElementById('awesome-canvas')
+                       console.log(canvas)
+                       var ctx = canvas.getContext('2d')
+                       //your code goes here and bellow
+                       ctx.moveTo(0, 0)
+                       ctx.lineTo(100,100)
+                       ctx.stroke()
+                       """

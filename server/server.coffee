@@ -45,6 +45,9 @@ db.once 'open', ->
         coding:
           rightSolutions: Number
           wrongSolutions: Number
+      preferedLanguage:
+        type: String
+        'enum': ['javascript', 'coffeescript']
     }, schemaOptions
   )
 
@@ -251,6 +254,8 @@ db.once 'open', ->
     if req.body?.finished and not user.finished
       console.log "finishUser"
       user.finishUser()
+
+    user.preferedLanguage = req.body?.preferedLanguage
 
     user.save (err, user) ->
       return res.send 400, err if err

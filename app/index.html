@@ -147,6 +147,21 @@
   </div>
 </div>
 
+
+<div id="language-chooser-modal" class="options-question modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title">What language you will be solving coding problems?</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-lg" data-lang='javascript'>JavaScript</button>
+        <button type="button" class="btn btn-primary btn-lg" data-lang='coffeescript'>CoffeeScript</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script id="pagination-tmpl" type="text/html">
   <ul class="pagination pull-right">
     <% _.each(questions, function(question, i){ %>
@@ -201,6 +216,7 @@
 <script src="bower_components/momentjs/moment.js"></script>
 <script src="bower_components/codemirror/lib/codemirror.js"></script>
 <script src="bower_components/codemirror/mode/coffeescript/coffeescript.js"></script>
+<script src="bower_components/codemirror/mode/javascript/javascript.js"></script>
 <script src="bower_components/coffee-script/extras/coffee-script.js"></script>
 <script src="bower_components/SyntaxHighlighter/scripts/XRegExp.js"></script>
 <script src="bower_components/SyntaxHighlighter/scripts/shCore.js"></script>

@@ -22,7 +22,7 @@ body{
 /* Space out content a bit */
 body {
     padding-top: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 60px;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
@@ -306,6 +306,17 @@ body {
   }
 }
 
+.modal.options-question{
+  .modal-header{
+    border-bottom: 0;
+  }
+  .modal-footer{
+    border-top: 0;
+    padding-top: 0;
+    margin-top: 10px;
+    text-align: center;
+  }
+}
 
 
 

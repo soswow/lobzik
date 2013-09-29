@@ -11,26 +11,51 @@ class app.CodingView extends Backbone.View
   assignmentTemplate: _.template $("#code-assignment-tmpl").html()
 
   initialize: ->
+    _.bindAll @, 'renderAssignments'
     @currentAssignment = 0
-    app.user.on 'change:codeSolutions', =>
-      for name, {code:code} of app.user.get('codeSolutions')
-        @codeMirrors[name].setValue(code)
-        @renderPaginator()
 
-    if app.env.has 'codeAssignments'
-      @renderAssignments()
+#    if app.env.has('codeAssignments') and app.user.has('preferedLanguage')
+#      @renderAssignments()
+
+    app.user.on 'change:codeSolutions', =>
+      # Means we alreadt have 'preferedLanguage'
+      @renderAssignments() unless @codeMirrors
+      @fillMirrors()
+
+  fillMirrors: ->
+    for name, {code:code} of app.user.get('codeSolutions')
+      @codeMirrors[name].setValue(code)
+      @renderPaginator()
+
+  checkPreferedLanguage: (cb) ->
+    if app.user.get('preferedLanguage')
+      cb()
     else
-      app.env.on 'change:codeAssignments', =>
-        @renderAssignments()
+      $modal = $("#language-chooser-modal")
+      $modal.modal(
+        keyboard: false
+      ).on 'hide.bs.modal', ->
+        return false unless app.user.get('preferedLanguage')
+
+      $buttons = $('#language-chooser-modal .modal-footer button')
+      $buttons.on 'click', (e) ->
+        app.user.save preferedLanguage: $(e.currentTarget).data 'lang'
+        $buttons.off 'click'
+        $modal.modal('hide')
+        cb()
 
   testCode: (e) ->
     $assignment = $(e.currentTarget).parents(".assignment")
     name = $assignment.data "name"
     assignment = _.find @codeAssignments, (as) -> as.name is name
-    coffeeScriptCode = @codeMirrors[name].getValue()
+    codeText = @codeMirrors[name].getValue()
     pass = false
     try
-      javascript = CoffeeScript.compile coffeeScriptCode, {bare:true}
+      javascript =
+        if app.user.get('preferedLanguage') is 'javascript'
+          "(" + codeText + ")"
+        else
+          CoffeeScript.compile codeText, bare:true
       assignment.userFun = eval(javascript)
       if assignment.testCase
         assignment.testCase()
@@ -82,18 +107,28 @@ class app.CodingView extends Backbone.View
     $assignments = @$(".assignments").empty()
     @codeMirrors = {}
     for assignment in @codeAssignments
-      $assignment = $ @assignmentTemplate _.extend assignment,
-        solution: app.user.get('codeSolutions')[assignment.name]
+      data = _.pick assignment, 'name', 'description'
+      data.solution = app.user.get('codeSolutions')[assignment.name]
+      data.placeholderCode = assignment.placeholderCode[app.user.get('preferedLanguage')]
+      $assignment = $ @assignmentTemplate data
       $assignments.append $assignment
       @codeMirrors[assignment.name] = CodeMirror.fromTextArea $assignment.find("textarea").get(0),
-        value: assignment.placeholderCode
-        mode: 'coffeescript'
+#        value: assignment.placeholderCode
+        mode: app.user.get('preferedLanguage')
         tabSize: 2
         indentUnit: 2
         indentWithTabs: true
         lineNumbers: true
     @showCurrentAssignment()
 
-  render: ->
+  refreshMirrors: ->
     for codeMirror in _.values @codeMirrors
       codeMirror.refresh()
+
+  render: ->
+    unless @codeMirrors
+      @checkPreferedLanguage =>
+        @renderAssignments()
+        @refreshMirrors()
+    else
+      @refreshMirrors()
