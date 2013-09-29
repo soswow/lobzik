@@ -8,6 +8,7 @@ _ = require("underscore")
 mongoose = require("mongoose")
 mongoose.connect 'mongodb://localhost/test'
 quizConfig = require('./quiz-config')
+authConfig = require('./config')
 
 db = mongoose.connection
 db.on 'error', console.error.bind console, 'connection error:'
@@ -157,26 +158,50 @@ db.once 'open', ->
 
   User = mongoose.model 'User', userSchema
 
+  findOrCreateUser = (authEmail) ->
+    promise = @Promise()
+    User.findByEmail authEmail, (err, user) ->
+      if err or not user
+        user = User.create email: authEmail
+        user.save (err, user) ->
+          return promise.fail(err) if err
+          promise.fulfill(user)
+      else
+        promise.fulfill(user)
+    return promise
+
   everyauth.github.configure
-    appId: '8f64e8b2199608057be4'
+    appId: authConfig.github.appId
+    appSecret: authConfig.github.appSecret
     entryPath: '/auth/github'
     callbackPath: '/auth/github/callback'
-    appSecret: 'a306648c84c087d7bcdab64bca185c72ffc931bd'
     scope: ''
     userPkey: '_id'
     findOrCreateUser: (session, accessToken, accessTokenExtra, githubUserMetadata) ->
-      promise = @Promise()
-      authEmail = githubUserMetadata.email
-      User.findByEmail authEmail, (err, user) ->
-        if err or not user
-          user = User.create email: authEmail
-          user.save (err, user) ->
-            return promise.fail(err) if err
-            promise.fulfill(user)
-        else
-          promise.fulfill(user)
-      return promise
+      findOrCreateUser.call this, githubUserMetadata.email
     redirectPath: '/'
+
+
+  everyauth.linkedin.configure
+    consumerKey: authConfig.linkedIn.consumerKey
+    consumerSecret: authConfig.linkedIn.consumerSecret
+    entryPath: '/auth/linkedin'
+    callbackPath: '/auth/linkedin/callback'
+    userPkey: '_id'
+#    fields: 'id,first-name,last-name,email-address,public-profile-url'
+    findOrCreateUser: (session, accessToken, accessTokenExtra, userMetadata) ->
+      findOrCreateUser.call this, userMetadata.emailAddress
+    fetchOAuthUser: (accessToken, accessTokenSecret) ->
+      promise = @Promise()
+      fields = 'id,first-name,last-name,email-address,public-profile-url'
+      @oauth.get "#{@apiHost()}/people/~:(#{fields})", accessToken, accessTokenSecret, (err, data, res) ->
+        if err
+          err.extra = data: data, res: res
+          return promise.fail(err)
+        oauthUser = JSON.parse(data)
+        promise.fulfill(oauthUser)
+      promise
+    redirectPath:'/'
 
   everyauth.everymodule.findUserById (userId, callback) ->
     User.findById userId, (err, user) ->
