@@ -120,7 +120,7 @@
         <h2>Your test score is</h2>
         <span class="score test-total-score"></span>
         <div class="dense text-left">
-          <span class="rightAnswers number"></span> question(s) you answered right.
+          <span class="rightAnswers number"></span> item(s) you answered right.
           You wrongly marked <span class="wrongAnswers number"></span> answer(s).
           And didn't mark <span class="missedRightAnswers number"></span> right one(s).
           The whole test took you <span class="took-time number"></span>
@@ -179,7 +179,7 @@
         <% if (options) { %>
           <ul class="list-unstyled options">
             <% _.each(options, function(option, i){ %>
-              <li><label><input class="option <%= name %> index-<%= i %>" type="checkbox" data-question-name="<%= name %>" data-index="<%= i %>"/> <%= option %></label></li>
+              <li><label class="option-answer"><input class="option <%= name %> index-<%= i %>" type="checkbox" data-question-name="<%= name %>" data-index="<%= i %>"/> <%= option %></label></li>
             <% }) %>
           </ul>
         <% } %>
@@ -230,6 +230,7 @@
 <script src="bower_components/SyntaxHighlighter/scripts/shBrushCss.js"></script>
 <script src="bower_components/SyntaxHighlighter/scripts/shBrushSass.js"></script>
 <script src="bower_components/SyntaxHighlighter/scripts/shBrushJScript.js"></script>
+<script src="bower_components/SyntaxHighlighter/scripts/shBrushXml.js"></script>
 
 <!-- endbuild -->
 
