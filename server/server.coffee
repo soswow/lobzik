@@ -84,7 +84,6 @@ db.once 'open', ->
 
   # My personal formula. I think it works the best
   scoreFormula = (answeredRight, answeredWrong, totalRight, totalWrong) ->
-    console.log "Score", answeredRight/totalRight, '-', answeredWrong/(totalWrong + 1)
     answeredRight/totalRight - answeredWrong/(totalWrong + 1)
 
   userSchema.methods.finishUser = ->
@@ -102,7 +101,6 @@ db.once 'open', ->
       rightAnswersNumber = question.rightAnswers.length
       givenAnswers = @testAnswers[name]
       rightGivenAnswers = _.intersection givenAnswers, question.rightAnswers
-      console.log name, givenAnswers, rightGivenAnswers, question.rightAnswers
       rightGivenAnswersNumber = rightGivenAnswers.length
       rightNotGivenAnswersNumber = rightAnswersNumber - rightGivenAnswersNumber
 
@@ -112,15 +110,7 @@ db.once 'open', ->
       else
         wrongAnswers = _.difference [0...question.options.length], question.rightAnswers
         wrongGivenAnswers = _.intersection givenAnswers, wrongAnswers
-        console.log wrongAnswers, wrongGivenAnswers
         [wrongGivenAnswers.length, wrongAnswers.length]
-
-
-      console.log "rightGiAnNum=" + rightGivenAnswersNumber,
-        "rightAnNum=" + rightAnswersNumber,
-        "wrongGiAnNumr=" + wrongGivenAnswersNumber,
-        "wrongAnNum=" + wrongAnswersNumber,
-        "notGiRightAn=" + notGivenRightAnswers
 
       score = scoreFormula rightGivenAnswersNumber,
         wrongGivenAnswersNumber,
@@ -181,7 +171,6 @@ db.once 'open', ->
     scope: ''
     userPkey: '_id'
     findOrCreateUser: (session, accessToken, accessTokenExtra, githubUserMetadata) ->
-      console.log githubUserMetadata
       findOrCreateUser.call this,
         email: githubUserMetadata.email
         avatar: githubUserMetadata.avatar_url
@@ -199,7 +188,6 @@ db.once 'open', ->
     userPkey: '_id'
 #    fields: 'id,first-name,last-name,email-address,public-profile-url'
     findOrCreateUser: (session, accessToken, accessTokenExtra, userMetadata) ->
-      console.log userMetadata
       findOrCreateUser.call this,
         email: userMetadata.emailAddress
         avatar: userMetadata.pictureUrl
@@ -237,8 +225,10 @@ db.once 'open', ->
   app.use express.urlencoded()
   app.use express.cookieParser()
   app.use express.session secret: 'as8df7a76d5f67sd'
-  app.use express.static path.resolve __dirname, '../../app'
-  app.use express.static path.resolve __dirname, '..'
+  app.configure 'development', ->
+    app.use express.static path.resolve __dirname, '../../app'
+    app.use express.static path.resolve __dirname, '..'
+#    app.use express.static path.resolve __dirname, '../../dist'
   app.use everyauth.middleware()
   app.set "port", process.env.PORT or 3000
 
@@ -247,8 +237,10 @@ db.once 'open', ->
     console.log "%s %s", req.method, req.url
     next()
 
-  app.get '/', (req, res) ->
-    res.sendfile path.join( __dirname, '../../app/index.html')
+  app.configure 'development', ->
+    app.get '/', (req, res) ->
+      res.sendfile path.join( __dirname, '../../app/index.html')
+#      res.sendfile path.join( __dirname, '../../dist/index.html')
 
   sendUserJSON = (user, res) ->
     omitFields = ['__v', '_id', 'testIndecies', 'codeAsignIndecies']
@@ -292,7 +284,6 @@ db.once 'open', ->
       user.markModified 'testAnswers'
 
     if req.body?.finished and not user.finished
-      console.log "finishUser"
       user.finishUser()
 
     user.preferedLanguage = req.body?.preferedLanguage
@@ -316,4 +307,4 @@ db.once 'open', ->
 
   # start server
   http.createServer(app).listen app.get("port"), ->
-    console.log "Express App started!"
+    console.log "Express App started on #{app.get('port')} in #{process.env.NODE_ENV} env"

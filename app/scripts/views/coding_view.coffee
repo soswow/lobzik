@@ -6,6 +6,7 @@ class app.CodingView extends Backbone.View
     'click .pagination a.page': 'changeQuestionPage'
     'click .pagination a.next': 'nextQuestion'
     'click .assignment button.test-code': 'testCode'
+    'click .assignment button.reset-code': 'resetCode'
 
   paginatorTemplate: _.template $("#pagination-tmpl").html()
   assignmentTemplate: _.template $("#code-assignment-tmpl").html()
@@ -44,10 +45,14 @@ class app.CodingView extends Backbone.View
         $modal.modal('hide')
         cb()
 
-  testCode: (e) ->
+  assignmentForButtonClick: (e) ->
     $assignment = $(e.currentTarget).parents(".assignment")
     name = $assignment.data "name"
-    assignment = _.find @codeAssignments, (as) -> as.name is name
+    _.find @codeAssignments, (as) -> as.name is name
+
+  testCode: (e) ->
+    assignment = @assignmentForButtonClick e
+    name = assignment.name
     codeText = @codeMirrors[name].getValue()
     pass = false
     try
@@ -71,6 +76,12 @@ class app.CodingView extends Backbone.View
       app.mainView.alert message, "danger"
     @codeMirrors[name].save()
     app.user.updateCodeSolution name, @codeMirrors[name].getValue(), pass
+    return false
+
+  resetCode: (e) ->
+    assignment = @assignmentForButtonClick e
+    app.user.updateCodeSolution assignment.name, assignment.placeholderCode[app.user.get('preferedLanguage')], false
+    return false
 
   changeQuestionPage: (e) ->
     @currentAssignment = $(e.currentTarget).data "index"
@@ -115,10 +126,6 @@ class app.CodingView extends Backbone.View
       @codeMirrors[assignment.name] = CodeMirror.fromTextArea $assignment.find("textarea").get(0),
 #        value: assignment.placeholderCode
         mode: app.user.get('preferedLanguage')
-        tabSize: 2
-        indentUnit: 2
-        indentWithTabs: true
-        lineNumbers: true
     @showCurrentAssignment()
 
   refreshMirrors: ->

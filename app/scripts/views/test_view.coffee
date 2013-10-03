@@ -74,9 +74,7 @@ class app.TestView extends Backbone.View
         question,
         answers: app.user.testAnswers?[question.name] or []
     @showCurrentQuestion()
-    SyntaxHighlighter.defaults['tab-size'] = 2;
-    SyntaxHighlighter.defaults['smart-tabs'] = false;
-    SyntaxHighlighter.all()
+    SyntaxHighlighter.highlight()
 
   selectAnswer: (e) ->
     $question = $(e.currentTarget).parents(".question")

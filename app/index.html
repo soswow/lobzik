@@ -16,10 +16,10 @@
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
   <!-- build:css(.tmp) styles/main.css -->
   <link rel="stylesheet" href="styles/main.css">
+  <!-- endbuild -->
+  <!-- build:css styles/highl.css -->
   <link rel="stylesheet" href="bower_components/SyntaxHighlighter/styles/shCore.css">
   <link rel="stylesheet" href="bower_components/SyntaxHighlighter/styles/shThemeDefault.css">
-  <!-- endbuild -->
-  <!-- build:css styles/code-theme.css -->
   <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css">
   <!-- endbuild -->
 </head>
@@ -201,7 +201,10 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <button class="test-code btn btn-primary pull-right">Test and save your code</button>
+        <div class="btn-group pull-right">
+          <button class="reset-code btn btn-default">Reset initial code</button>
+          <button class="test-code btn btn-primary">Test and save your code</button>
+        </div>
       </div>
     </div>
     <textarea class="code name-<%= name %>" name="" id="" cols="30" rows="10"><%= solution || placeholderCode %></textarea>
@@ -217,6 +220,12 @@
 </script>
 
 <!-- build:js scripts/vendor.js -->
+<script src="bower_components/SyntaxHighlighter/scripts/XRegExp.js"></script>
+<script src="bower_components/SyntaxHighlighter/scripts/shCore.js"></script>
+<script src="bower_components/SyntaxHighlighter/scripts/shBrushCss.js"></script>
+<script src="bower_components/SyntaxHighlighter/scripts/shBrushSass.js"></script>
+<script src="bower_components/SyntaxHighlighter/scripts/shBrushJScript.js"></script>
+<script src="bower_components/SyntaxHighlighter/scripts/shBrushXml.js"></script>
 <script src="bower_components/jquery/jquery.js"></script>
 <script src="bower_components/underscore/underscore.js"></script>
 <script src="bower_components/backbone/backbone.js"></script>
@@ -225,13 +234,10 @@
 <script src="bower_components/codemirror/mode/coffeescript/coffeescript.js"></script>
 <script src="bower_components/codemirror/mode/javascript/javascript.js"></script>
 <script src="bower_components/coffee-script/extras/coffee-script.js"></script>
-<script src="bower_components/SyntaxHighlighter/scripts/XRegExp.js"></script>
-<script src="bower_components/SyntaxHighlighter/scripts/shCore.js"></script>
-<script src="bower_components/SyntaxHighlighter/scripts/shBrushCss.js"></script>
-<script src="bower_components/SyntaxHighlighter/scripts/shBrushSass.js"></script>
-<script src="bower_components/SyntaxHighlighter/scripts/shBrushJScript.js"></script>
-<script src="bower_components/SyntaxHighlighter/scripts/shBrushXml.js"></script>
-
+<script src="bower_components/sass-bootstrap/js/alert.js"></script>
+<script src="bower_components/sass-bootstrap/js/modal.js"></script>
+<script src="bower_components/sass-bootstrap/js/transition.js"></script>
+<script src="bower_components/sass-bootstrap/js/button.js"></script>
 <!-- endbuild -->
 
 <!-- build:js(.tmp) scripts/main.js -->
@@ -244,21 +250,6 @@
 <script src="scripts/model.js"></script>
 <script src="scripts/router.js"></script>
 <script src="scripts/start.js"></script>
-<!-- endbuild -->
-
-<!-- build:js scripts/plugins.js -->
-<script src="bower_components/sass-bootstrap/js/affix.js"></script>
-<script src="bower_components/sass-bootstrap/js/alert.js"></script>
-<script src="bower_components/sass-bootstrap/js/dropdown.js"></script>
-<script src="bower_components/sass-bootstrap/js/tooltip.js"></script>
-<script src="bower_components/sass-bootstrap/js/modal.js"></script>
-<script src="bower_components/sass-bootstrap/js/transition.js"></script>
-<script src="bower_components/sass-bootstrap/js/button.js"></script>
-<script src="bower_components/sass-bootstrap/js/popover.js"></script>
-<script src="bower_components/sass-bootstrap/js/carousel.js"></script>
-<script src="bower_components/sass-bootstrap/js/scrollspy.js"></script>
-<script src="bower_components/sass-bootstrap/js/collapse.js"></script>
-<script src="bower_components/sass-bootstrap/js/tab.js"></script>
 <!-- endbuild -->
 </body>
 </html>
