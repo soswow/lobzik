@@ -1,15 +1,15 @@
 module.exports =
-  maxDuration: 1000 * 60 * 100
+  maxDuration: 1000 * 60 * 42
   testQuestionsToShow: 4
   codeAssignmentsToShow: 3
   testQuestions: [
     {
-      name: "q-1"
-      description: "Did you catch that fish?"
+      name: "question-one"
+      description: "Question one"
       options: [
-        "No I talked him into giving himself up."
-        "No I was sitting here minding my own business when the crazy thing jumped into my pail."
-        "No it's a plastic model to get people like you to start fascinating conversations."
+        "wrong answer 1"
+        "right answer 1"
+        "right answer 2"
       ]
       rightAnswers: [2, 1]
     }
@@ -19,7 +19,7 @@ module.exports =
       options: [
         "wrong answer 1"
         "wrong answer 2"
-        "right answer"
+        "right answer 1"
       ]
       rightAnswers: [2]
     }
@@ -27,69 +27,24 @@ module.exports =
       name: "question-three"
       description: "Question three"
       options: [
+        "right answer 1"
         "wrong answer 1"
-        "wrong answer 2"
-        "right answer"
+        "right answer 2"
       ]
       rightAnswers: [0, 2]
     }
     {
       name: "iterator-question"
       description: """
-                   Look at the given CSS. We view the pages two different ways.
-                   <ul>
-                    <li>In a browser window with width of 720px, and height of 1000px;</li>
-                    <li>In a Retina display iPhone (resolution [640 × 960])</li>
-                  </ul>
-
-                   What is the height and padding of the header element in both cases?
-                   What is the font-size of the h2 element in both cases?
-
+                   What is the hight and width of the box?
                    <pre class="brush: scss; tab-size: 2; smart-tabs: false">
-header {
-  background: #2a3d4b;
-  padding: 10px;
-  overflow: hidden;
-  height: 45px;
-}
-.main-list{
-  margin:0;
-  width:auto;
-}
-.main-list > li {
-  margin: 0 10px;
-}
-h2{
-  font-size:12px;
-}
-@media only screen and (max-width: 800px) {
-  ul.main-list{
-    margin:0 -10px;
-  }
-  .main-list > li {
-    margin: 0 10px;
-  }
-  header {
-    padding: 8px;
-    height: 50px;
-  }
-}
-@media screen and (min-height: 350px) {
-  header {
-    height: 55px;
-  }
-}
-@media only screen and (-webkit-min-device-pixel-ratio: 2) {
-  h2{
-    font-size:14px;
-  }
-  header {
-    height: 60px;
-  }
+.box {
+  height: 10px;
+  width: 20px;
 }
 </pre>"""
-      cloze: "<div class='cloze-line'>header height in browser is {0} px</div><div class='cloze-line'>h2 font-size in iPhone is {1} px</div>"
-      rightAnswers: ['55', '14']
+      cloze: "<div class='cloze-line'>box height is {0} px</div><div class='cloze-line'>box's width is {1} px</div>"
+      rightAnswers: ['10', '20']
     }
   ]
   codeAssignments: [
@@ -112,10 +67,18 @@ h2{
           answers = ['foobar', 1, 2,'foo',4,'bar','foo',7,8,'foo','bar',11,'foo',13,14,'foobar']
           for ans, i in answers
             @assert [i], ans
+          foobarNumber = Math.round((Math.random() * 1000)) * 15
+          try
+            @assert [foobarNumber], 'foobar'
+          catch e
+            throw "Until 15 it works, but than it doesn't. Hacker?"
     }
     {
       name: "harder"
-      description: "Implement a function that reverse a input string"
+      description: """
+                   Implement a function that reverse a input string.<br/>
+                   <span class='tip-text'>(Bonus points for not using for/while loops or Array.reverse)</span>
+                   """
       placeholderCode:
         coffeescript: "(line) -> #your code goes here"
         javascript: "function(line){\n\t//your code goes here\n}"
@@ -125,6 +88,8 @@ h2{
         @assert ['ab'], 'ba'
         @assert ['abc'], 'cba'
         @assert ['abcd'], 'dcba'
+        randomString = (Math.round(Math.random()) for n in [0..20]).join("")
+        @assert [randomString], randomString.split("").reverse().join("")
     }
   ]
   creativeCodeAssignment:
@@ -133,23 +98,45 @@ h2{
                  Wanna prove you are The Best? </br>
                  Prove it! Draw us a fireworks! Make it awesome!
                  <canvas id='awesome-canvas' height='300' width='480'></canvas>
+                 <div class='canvas-controls'>
+                 <button id='startLife' class='btn btn-success'>Start</button>
+                 <button id='killLife' class='btn btn-danger'>Reset</button>
+                 </div>
+                 <span class='tip-text'>
+                 (Don't forget to press 'Test and save...' to eval() your code before starting game)
+                 </span>
                  """
     placeholderCode:
       coffeescript: """
-                     canvas = document.getElementById 'awesome-canvas'
-                     console.log canvas
-                     ctx = canvas.getContext '2d'
-                     #your code goes here and bellow
-                     ctx.moveTo 0, 0
-                     ctx.lineTo 100,100
-                     ctx.stroke()
+                      canvas = document.getElementById 'awesome-canvas'
+                      ctx = canvas.getContext '2d'
+
+                      reset = -> canvas.width = canvas.width
+                      reset()
+                      $("#startLife").click ->
+                        reset()
+                        # Your code probobly goes here, like this
+                        ctx.moveTo 0, 0
+                        ctx.lineTo 100,100
+                        ctx.stroke()
+
+                      $("#killLife").click -> reset()
                      """
       javascript: """
-                       var canvas = document.getElementById('awesome-canvas')
-                       console.log(canvas)
-                       var ctx = canvas.getContext('2d')
-                       //your code goes here and bellow
-                       ctx.moveTo(0, 0)
-                       ctx.lineTo(100,100)
-                       ctx.stroke()
+                  function(){
+                    var canvas = document.getElementById('awesome-canvas');
+                    var ctx = canvas.getContext('2d');
+
+                    var reset = function(){ canvas.width = canvas.width; }
+                    reset();
+                    $("#startLife").click(function(){
+                      reset();
+                      // Your code probobly goes here, like this
+                      ctx.moveTo(0, 0);
+                      ctx.lineTo(100,100);
+                      ctx.stroke();
+                    });
+
+                    $("#killLife").click(function(){ reset(); });
+                  }()
                        """

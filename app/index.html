@@ -10,7 +10,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>testing framework</title>
+  <title>Front-End Quiz</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width">
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="bower_components/SyntaxHighlighter/styles/shThemeDefault.css">
   <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css">
   <!-- endbuild -->
+  <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-1.0.9.min.js" data-apikey="!BUGSNAG KEY!"></script>
 </head>
 <body>
 <!--[if lt IE 10]>
@@ -47,51 +48,28 @@
       <div class="jumbotron">
         <h1>Ready to start?</h1>
 
-        <p class="lead">Please login with one of true coders ways:</p>
+        <p class="lead">Log in to take the Front-End skill test:</p>
 
         <p><a class="btn btn-lg btn-primary" href="/auth/github"><i class="icon-github-sign"></i> GitHub</a>
           <a class="btn btn-lg btn-primary" href="/auth/linkedin"><i class="icon-linkedin-sign"></i> LinkedIn</a></p>
 
-        <p class="lead">or some other way:</p>
-
-        <p><a class="btn" href="#"><i class="icon-google-plus-sign"></i> Google</a> <a class="btn" href="#"><i
-            class="icon-facebook-sign"></i> Facebook</a></p>
+        <!--<p class="lead">or some other way:</p>-->
+<!---->
+        <!--<p><a class="btn" href="#"><i class="icon-google-plus-sign"></i> Google</a> <a class="btn" href="#"><i-->
+            <!--class="icon-facebook-sign"></i> Facebook</a></p>-->
       </div>
       <div class="row marketing">
-        <div class="col-lg-6">
+        <div class="col-lg-9">
           <h4>What is behind login?</h4>
-
-          <p>Test consists of two parts:
           <ul>
-            <li>standard test with predefined answers</li>
-            <li>code assignments</li>
+            <li>You have 30 minutes to complete the test</li>
+            <li>There will be 3 questions with pre-determined selectable answers</li>
+            <li>Additionally you're challenged with 2 code assignments + a bonus for extra capable developers</li>
+            <li>We'll show you test results immediately for rapid feedback</li>
           </ul>
-          </p>
-        </div>
-        <div class="col-lg-6">
-          <h4>We love CoffeeScript</h4>
-
-          <p>In our company we use <a href="http://coffeescript.org">CoffeeScript</a>, that's why code assignments will use it.</p>
         </div>
       </div>
-      <div class="row marketing">
-        <div class="col-lg-6">
-          <h4>Any restrictions?</h4>
-
-          <p>There two things:
-          <ul>
-            <li>test is time limited to 25 min</li>
-            <li>code assignments</li>
-          </ul>
-          </p>
         </div>
-        <!--<div class="col-lg-6">-->
-        <!--<h4>We love CoffeeScript</h4>-->
-        <!---->
-        <!--<p>In our company we use <a href="http://coffeescript.org">CoffeeScript</a>, that's why code assignments will use it.</p>-->
-        <!--</div>-->
-      </div>
-    </div>
 
     <div id="test" class="screen">
       <div class="row">
@@ -117,19 +95,26 @@
 
     <div id="result" class="screen">
       <div class="jumbotron">
-        <h2>Your test score is</h2>
-        <span class="score test-total-score"></span>
-        <div class="dense text-left">
-          <span class="rightAnswers number"></span> item(s) you answered right.
+        <h2>Your total score is</h2>
+        <span class="score total-score"></span>
+
+        <div class="dense text-left" style="margin-top: 25px">
+          You completed the test in <span class="took-time number"></span>.
+          <span class="rightAnswers number"></span> answer(s) marked right.
           You wrongly marked <span class="wrongAnswers number"></span> answer(s).
-          And didn't mark <span class="missedRightAnswers number"></span> right one(s).
-          The whole test took you <span class="took-time number"></span>
-        </div>
-        <h2>Your coding score is</h2>
-        <span class="score coding-total-score"></span>
-        <div class="dense text-left">
-          You've solved <span class="doneSolutions number"></span> of
+          And didn't mark <span class="missedRightAnswers number"></span> right one(s). You've solved <span class="doneSolutions number"></span> of
           <span class="totalSolutions number"></span> coding problems.
+        </div>
+
+        <div class="dense text-left" style="margin-top: 25px">
+          <div class="message bad hide">Thank you for trying the test! You
+            came close. We wish you all success for the future and definitely keep
+            developing your coding skills.</div>
+
+          <div class="message ok hide">Cool! It seems that your skills are pretty high!</div>
+
+          <div class="message good hide">Quite impressive. You certainly
+            know some about front-end development.</div>
         </div>
       </div>
     </div>
@@ -151,7 +136,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header text-center">
-        <h4 class="modal-title">What language you will be solving coding problems?</h4>
+        <h4 class="modal-title">What language you will be solving coding problems with?</h4>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default btn-lg" data-lang='javascript'>JavaScript</button>

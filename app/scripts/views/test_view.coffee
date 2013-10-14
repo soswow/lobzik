@@ -51,7 +51,7 @@ class app.TestView extends Backbone.View
 
   nextQuestion: ->
     if @currentQuestion is @questions.length - 1
-      app.router.navigate 'coding', trigger: true
+      app.router.navigate 'page/coding', trigger: true
     else
       @currentQuestion += 1
       @renderPaginator()

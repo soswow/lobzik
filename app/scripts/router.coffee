@@ -1,9 +1,9 @@
 class app.Router extends Backbone.Router
   routes:
-    'login': 'login'
-    'test': 'test'
-    'coding': 'coding'
-    'result': 'result'
+    'page/login': 'login'
+    'page/test': 'test'
+    'page/coding': 'coding'
+    'page/result': 'result'
     '*path':  'login'
 
   goto: (page) -> @navigate page, trigger: true
@@ -17,7 +17,7 @@ class app.Router extends Backbone.Router
           cb()
         error: =>
           app.mainView.show 'login'
-          @navigate 'login'
+          @navigate 'page/login'
           app.mainView.hideLoader()
     else
       cb()
@@ -28,9 +28,9 @@ class app.Router extends Backbone.Router
         app.mainView.addMenuLinks()
         app.mainView.showSidebar()
         app.mainView.show page
-        @navigate page
+        @navigate 'page/' + page
       else
-        @goto 'result'
+        @goto 'page/result'
 
   login: -> @testAndCoding 'test'
   test: -> @testAndCoding 'test'

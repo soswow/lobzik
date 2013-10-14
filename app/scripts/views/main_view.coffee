@@ -19,7 +19,7 @@ class app.MainView extends Backbone.View
     @$time = @$breadcrumb.find(".time").show()
 
     app.user.on 'change:finished', ->
-      app.router.navigate('result', trigger:true) if app.user.get('finished')
+      app.router.navigate('page/result', trigger:true) if app.user.get('finished')
 
     app.user.on 'change:id', =>
       app.mainView.startTimer()
@@ -35,7 +35,7 @@ class app.MainView extends Backbone.View
       @alert "One minute left! When it's gone all unsaved data will be lost!", "warning"
     if dur is 0
       @alert "Time's up!", "info"
-      return app.router.navigate 'result', trigger: true
+      return app.router.navigate 'page/result', trigger: true
     padZero = (num) -> (num < 10 and "0" or "") + num
     time = [padZero(dur.hours()), (dur.minutes() > 0 and boldStart or "") +
     padZero(dur.minutes()), (dur.minutes() is 0 and boldStart or "") +
@@ -85,8 +85,8 @@ class app.MainView extends Backbone.View
 
   addMenuLinks: ->
     unless @$breadcrumb.find('a').length
-      @$breadcrumb.find('.test span').wrap $("<a href='#test'></a>")
-      @$breadcrumb.find('.coding span').wrap $("<a href='#coding'></a>")
+      @$breadcrumb.find('.test span').wrap $("<a href='#page/test'></a>")
+      @$breadcrumb.find('.coding span').wrap $("<a href='#page/coding'></a>")
 
   removeMenuLinks: ->
     if @$breadcrumb.find('a').length
