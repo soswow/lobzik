@@ -1,5 +1,7 @@
 "use strict"
 
+bugsnag = require("bugsnag")
+bugsnag.register("764cddd764b961bbd41e20c081501ccf")
 express = require("express")
 http = require("http")
 path = require("path")
@@ -9,6 +11,9 @@ mongoose = require("mongoose")
 mongoose.connect 'mongodb://localhost/test'
 quizConfig = require('./quiz-config')
 authConfig = require('./config')
+
+Campfire = require('smores')
+campfire = new Campfire(ssl: true, token: authConfig.campfire.apiToken, account: authConfig.campfire.account)
 
 db = mongoose.connection
 db.on 'error', console.error.bind console, 'connection error:'
@@ -96,6 +101,7 @@ db.once 'open', ->
     totalWrongAnswers = 0
     notGivenRightAnswers = 0
     for idx in @testIndecies
+
       question = quizConfig.testQuestions[idx]
       name = question.name
       rightAnswersNumber = question.rightAnswers.length
@@ -121,6 +127,7 @@ db.once 'open', ->
       totalRightAnswers += rightGivenAnswersNumber
       totalWrongAnswers += wrongGivenAnswersNumber
       notGivenRightAnswers += rightNotGivenAnswersNumber
+      score = rightGivenAnswersNumber = wrongGivenAnswersNumber = rightNotGivenAnswersNumber = 0
 
     @result.test =
       totalScore: totalScore
@@ -143,6 +150,16 @@ db.once 'open', ->
       wrongSolutions: wrongSolutions
 
     @markModified('result')
+    totalPercent = Math.round ((rightSolutions/@codeAsignIndecies.length) + @result.test.normScore) * 100
+    campfire.join authConfig.campfire.roomId, (err, room) =>
+      return console.error(err) if err and not room
+      room.paste """#{@email} just finished test with following result:
+      - test: #{totalRightAnswers} right answers, #{totalWrongAnswers} wrong answers, #{notGivenRightAnswers} not given right answers
+      - scores: total score = #{@result.test.totalScore}, normilized score = #{@result.test.normScore}
+      - coding: #{rightSolutions} right solutions, #{wrongSolutions} wrong solutions
+      - Total percent: #{totalPercent}
+      """
+
 
   userSchema.virtual('durationLeft').get ->
     res = Math.ceil (env.maxDuration - (Date.now() - @startedAt.getTime())) / 1000
@@ -172,7 +189,7 @@ db.once 'open', ->
     userPkey: '_id'
     findOrCreateUser: (session, accessToken, accessTokenExtra, githubUserMetadata) ->
       findOrCreateUser.call this,
-        email: githubUserMetadata.email
+        email: githubUserMetadata.email or githubUserMetadata.url
         avatar: githubUserMetadata.avatar_url
         url: githubUserMetadata.url
         name: githubUserMetadata.name
@@ -189,7 +206,7 @@ db.once 'open', ->
 #    fields: 'id,first-name,last-name,email-address,public-profile-url'
     findOrCreateUser: (session, accessToken, accessTokenExtra, userMetadata) ->
       findOrCreateUser.call this,
-        email: userMetadata.emailAddress
+        email: userMetadata.emailAddress or userMetadata.publicProfileUrl
         avatar: userMetadata.pictureUrl
         url: userMetadata.publicProfileUrl
         name: userMetadata.firstName + ' ' + userMetadata.lastName

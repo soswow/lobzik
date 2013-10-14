@@ -92,7 +92,7 @@ class app.CodingView extends Backbone.View
   nextQuestion: ->
     if @currentAssignment is @codeAssignments.length - 1
       $("#finish-button").focus()
-      app.mainView.alert 'Click Finish Test if you fill so. ;-)', 'info'
+      app.mainView.alert 'Click "Finish test!" if you think you\'re ready! ;-)', 'info'
     else
       @currentAssignment += 1
       @renderPaginator()

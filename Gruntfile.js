@@ -172,6 +172,17 @@ module.exports = function (grunt) {
           }
         ]
       },
+      config: {
+        files: [
+          {
+            expand: true,
+            cwd: '<%= yeoman.server %>',
+            src: 'quiz-config.coffee',
+            dest: '<%= yeoman.server %>',
+            ext: '.js'
+          }
+        ]
+      },
       test: {
         files: [
           {
@@ -227,9 +238,13 @@ module.exports = function (grunt) {
     // not enabled since usemin task does concat and uglify
     // check index.html to edit your build targets
     // enable this task if you prefer defining your build targets here
-    /*uglify: {
-     dist: {}
-     },*/
+    uglify: {
+     config: {
+       files: {
+         '<%= yeoman.server %>/quiz-config.js': '<%= yeoman.server %>/quiz-config.js'
+       }
+     }
+    },
     rev: {
       dist: {
         files: {

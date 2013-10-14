@@ -35,7 +35,7 @@ assert = (args, output) ->
   throw "No user function" unless @userFun
   actual = @userFun.apply(this, args)
   if not _.isEqual actual, output
-    throw "For arguments [\"#{args and args.join("\",\"")}\"]: \"#{output}\" was expected, but got \"#{actual}\""
+    throw "For arguments #{JSON.stringify(args)}: #{JSON.stringify(output)} was expected, but got #{JSON.stringify(actual)}"
 
 class app.Environment extends Backbone.Model
   modelName: 'user'
