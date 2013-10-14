@@ -2,7 +2,7 @@ This is simple application that you can use for test person's knowledge of somet
 Currently it is more specific for testing Front-end developer, because it can check JavaScript coding abilities.
 
 
-Example of production instance is available here: [test.toggl.com](test.toggl.com)
+Example of production instance is available here: [test.toggl.com](https://test.toggl.com)
 
 ###Features
 * Multiple answer test questions
