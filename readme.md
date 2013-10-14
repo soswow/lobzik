@@ -14,8 +14,11 @@ Example of production instance is available here: [test.toggl.com](test.toggl.co
 * Login with Github or LinkedIn
 * Campfire notification when user finishes the test
 
+####Login screen
 ![Login screen](/images/Screenshot1.png "Login screen")
+####Test question screen
 ![Test assignment](/images/Screenshot2.png "Test assignment")
+####Code assignment screen
 ![Code assignment](/images/Screenshot3.png "Code assignment")
 
 ###How to run
