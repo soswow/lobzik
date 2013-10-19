@@ -73,7 +73,6 @@ class app.MainView extends Backbone.View
     $(".container > .right-side").show()
 
   show: (viewName) ->
-    console.log viewName
     app.env.fetch() unless app.env.has 'testQuestions'
     @$breadcrumb.find(".step").removeClass("active").filter(".#{viewName}").addClass("active")
     for name, view of @views
@@ -100,9 +99,12 @@ class app.MainView extends Backbone.View
         success: => @hideLoader()
 
   renderUser: ->
-#    safeEmail = app.user.escape 'email'
-#    authProvider = app.user.get 'authType'
-    avatar = app.user.get 'avatar'
-    $("#loggedin-user").show().html @userInfoTemplate app.user.attributes
+    Bugsnag?.metaData?.user =
+      name: app.user.get('name')
+      email: app.user.get('email')
+    $("#loggedin-user").show().html @userInfoTemplate
+      avatar: app.user.get('avatar')
+      name:  app.user.get('name')
+      email:  app.user.get('email')
     unless app.user.get 'finished'
       $("#finish-button").show()

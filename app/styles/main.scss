@@ -253,7 +253,7 @@ body {
         margin-left: -17px;
       }
       .move-up{
-        margin-top: -15px !important;
+        margin-top: -21px !important;
       }
     }
   }
@@ -336,7 +336,15 @@ body {
     text-align: center;
   }
 }
+.syntaxhighlighter{
+  padding: 5px;
+}
 
-
+#login .small{
+  position: absolute;
+  font-size: 14px;
+  margin-left: -23px;
+  margin-top: -5px;
+}
 
 
