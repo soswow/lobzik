@@ -10,10 +10,12 @@
     "baucis": "~0.4.6",
     "express-hbs": "~0.2.0",
     "underscore": "~1.4.4",
-    "everyauth": "~0.4.5",
     "ranger": "~0.2.4",
     "smores": "~1.0.1",
-    "bugsnag": "~1.1.1"
+    "bugsnag": "~1.1.1",
+    "passport": "~0.1.17",
+    "passport-linkedin-oauth2": "https://github.com/jschell12/passport-linkedin-oauth2/tarball/master",
+    "passport-github": "~0.1.5"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

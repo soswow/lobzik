@@ -5,7 +5,6 @@ bugsnag.register("764cddd764b961bbd41e20c081501ccf")
 express = require("express")
 http = require("http")
 path = require("path")
-everyauth = require("everyauth")
 _ = require("underscore")
 mongoose = require("mongoose")
 mongoose.connect 'mongodb://localhost/test'
@@ -14,6 +13,10 @@ authConfig = require('./config')
 
 Campfire = require('smores')
 campfire = new Campfire(ssl: true, token: authConfig.campfire.apiToken, account: authConfig.campfire.account)
+
+passport = require('passport')
+LinkedInStrategy = require('passport-linkedin-oauth2').Strategy
+GitHubStrategy = require('passport-github').Strategy
 
 db = mongoose.connection
 db.on 'error', console.error.bind console, 'connection error:'
@@ -69,7 +72,7 @@ db.once 'open', ->
     else
       cb null, this
 
-  userSchema.statics.findByEmail = (email, cb) -> @findOne { email: email }, cb
+#  userSchema.statics.findByEmail = (email, cb) -> @findOne { email: email }, cb
   userSchema.statics.create = (data) ->
     data.startedAt = new Date()
     data.testIndecies = _.shuffle([0...quizConfig.testQuestions.length])[...quizConfig.testQuestionsToShow]
@@ -160,7 +163,6 @@ db.once 'open', ->
       - Total percent: #{totalPercent}
       """
 
-
   userSchema.virtual('durationLeft').get ->
     res = Math.ceil (env.maxDuration - (Date.now() - @startedAt.getTime())) / 1000
     res = 0 if res < 0
@@ -168,67 +170,80 @@ db.once 'open', ->
 
   User = mongoose.model 'User', userSchema
 
-  findOrCreateUser = (userInfo) ->
-    promise = @Promise()
-    User.findByEmail userInfo.email, (err, user) ->
+  findOrCreateUser = (cb, userInfo) ->
+
+    User.findOne { $or: [{email: userInfo.email}, {url: userInfo.url}] }, (err, user) ->
       if err or not user
+        console.log 'Not found. Creating.'
         user = User.create userInfo
-        user.save (err, user) ->
-          return promise.fail(err) if err
-          promise.fulfill(user)
       else
-        promise.fulfill(user)
-    return promise
+        console.log 'Found. Reading.'
+        if user.email isnt userInfo.email
+          user.email = userInfo.email
+          console.log "Found by url. Rewriting: #{user.url} -> #{user.email}"
 
-  everyauth.github.configure
-    appId: authConfig.github.appId
-    appSecret: authConfig.github.appSecret
-    entryPath: '/auth/github'
-    callbackPath: '/auth/github/callback'
-    scope: ''
-    userPkey: '_id'
-    findOrCreateUser: (session, accessToken, accessTokenExtra, githubUserMetadata) ->
-      findOrCreateUser.call this,
-        email: githubUserMetadata.email or githubUserMetadata.url
-        avatar: githubUserMetadata.avatar_url
-        url: githubUserMetadata.url
-        name: githubUserMetadata.name
-        authType: 'github'
-    redirectPath: '/'
+      user.save (err, user) ->
+        return cb(err) if err
+        cb null, user
 
-
-  everyauth.linkedin.configure
-    consumerKey: authConfig.linkedIn.consumerKey
-    consumerSecret: authConfig.linkedIn.consumerSecret
-    entryPath: '/auth/linkedin'
-    callbackPath: '/auth/linkedin/callback'
-    userPkey: '_id'
-#    fields: 'id,first-name,last-name,email-address,public-profile-url'
-    findOrCreateUser: (session, accessToken, accessTokenExtra, userMetadata) ->
-      findOrCreateUser.call this,
-        email: userMetadata.emailAddress or userMetadata.publicProfileUrl
-        avatar: userMetadata.pictureUrl
-        url: userMetadata.publicProfileUrl
-        name: userMetadata.firstName + ' ' + userMetadata.lastName
+  passport.use new LinkedInStrategy {
+      clientID: authConfig.linkedIn.consumerKey,
+      clientSecret: authConfig.linkedIn.consumerSecret
+      callbackURL: '/auth/linkedin/callback'
+      scope: ['r_emailaddress', 'r_basicprofile']
+      profileFields: ['id','picture-url','first-name','last-name','email-address','public-profile-url']
+    },
+    (accessToken, refreshToken, profile, done) ->
+      profile = profile._json
+#      console.log 'linkedIn', profile
+      findOrCreateUser done,
+        email: profile.emailAddress or profile.publicProfileUrl
+        avatar: profile.pictureUrl
+        url: profile.publicProfileUrl
+        name: profile.firstName + ' ' + profile.lastName
         authType: 'linkedin'
-    fetchOAuthUser: (accessToken, accessTokenSecret) ->
-      promise = @Promise()
-      fields = 'id,picture-url,first-name,last-name,email-address,public-profile-url'
-      @oauth.get "#{@apiHost()}/people/~:(#{fields})", accessToken, accessTokenSecret, (err, data, res) ->
-        if err
-          err.extra = data: data, res: res
-          return promise.fail(err)
-        oauthUser = JSON.parse(data)
-        promise.fulfill(oauthUser)
-      promise
-    redirectPath:'/'
 
-  everyauth.everymodule.findUserById (userId, callback) ->
-    User.findById userId, (err, user) ->
-      return callback(null) if err or not user
-      user.checkIfFinished callback
-#
-#  everyauth.everymodule.logoutRedirectPath '/'
+  request = require('request')
+
+  passport.use new GitHubStrategy {
+    clientID: authConfig.github.appId,
+    clientSecret: authConfig.github.appSecret,
+    callbackURL: "/auth/github/callback"
+    scope: ['user:email']
+  },
+    (accessToken, refreshToken, profile, done) ->
+      profile = profile._json
+      cont = ->
+        console.log 'findOrCreateUser', profile
+        findOrCreateUser done,
+          email: profile.email or profile.html_url
+          avatar: profile.avatar_url
+          url: profile.url
+          name: profile.name
+          authType: 'github'
+
+      if profile.email
+        cont()
+      else
+        url = "https://api.github.com/user/emails?access_token=#{accessToken}"
+        request url, (error, response, body) ->
+          if !error && response.statusCode == 200
+            emails = JSON.parse(body)
+            console.log 'emails:', emails
+            for email in emails
+              if email.indexOf('noreply.github.com') is -1
+                profile.email = email
+                break
+
+          return cont()
+
+  passport.serializeUser (user, done) ->
+    done null, user.id
+
+  passport.deserializeUser (id, done) ->
+    User.findById id, (err, user) ->
+      done err, user
+
 
   app = express()
 
@@ -245,9 +260,31 @@ db.once 'open', ->
   app.configure 'development', ->
     app.use express.static path.resolve __dirname, '../../app'
     app.use express.static path.resolve __dirname, '..'
-#    app.use express.static path.resolve __dirname, '../../dist'
-  app.use everyauth.middleware()
+  app.use passport.initialize()
+  app.use passport.session()
   app.set "port", process.env.PORT or 3000
+
+  app.get '/auth/linkedin',
+    passport.authenticate('linkedin',
+      {scope: ['r_emailaddress', 'r_basicprofile'], state: "blahblah293874kghsd78326"}
+      (req, res) ->
+    )
+
+  app.get '/auth/github', passport.authenticate 'github'
+
+  app.get '/logout', (req, res) ->
+    req.logout()
+    res.redirect('/')
+
+#    callbackURL: "http://127.0.0.1:3000/auth/linkedin/callback"
+
+  app.get '/auth/linkedin/callback',
+    passport.authenticate 'linkedin', {successRedirect: '/', failureRedirect: '/'}
+
+  app.get '/auth/github/callback',
+    passport.authenticate('github', { failureRedirect: '/' }),
+    (req, res) ->
+      res.redirect('/')
 
   # simple log
   app.use (req, res, next) ->
