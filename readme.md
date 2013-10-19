@@ -21,6 +21,7 @@ Example of production instance is available here: [test.toggl.com](test.toggl.co
 ###How to run
 This project uses grunt for building and running development version.
 Just run `grunt` to run local dev version. Application uses mongodb, so in order to run it should be available.
+Also you need to rename `server/_config.coffee` to `server/config.coffee` and fill it with right information
 
 ###How to build
 To build project run `grunt build` and you will get ready to deploy client code in folder `/dist`
