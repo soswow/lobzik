@@ -4,6 +4,7 @@ class app.Router extends Backbone.Router
     'page/test': 'test'
     'page/coding': 'coding'
     'page/result': 'result'
+    'page/admin': 'admin'
     '*path':  'login'
 
   goto: (page) -> @navigate page, trigger: true
@@ -44,5 +45,10 @@ class app.Router extends Backbone.Router
         app.mainView.show 'result'
       else
         @goto 'test'
+
+  admin: ->
+    @securedPage =>
+      if app.user?.get('isAdmin')
+        app.mainView.show 'admin'
 
 app.router = new app.Router()

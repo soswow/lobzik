@@ -25,7 +25,7 @@ env =
 # ------------------------------
 #
 mongoose = require("mongoose")
-mongoose.connect 'mongodb://localhost/test'
+mongoose.connect authConfig.mongoUrl
 schemaOptions =
   toObject:
     virtuals: true
@@ -102,7 +102,7 @@ userSchema.methods.publicJSON = ->
   omitFields = omitFields.concat if @finished
     ['codeSolutions', 'testAnswers']
   else
-    ['result']
+    ['result', 'resultPercent']
 
   userObj = _.omit @toObject(), omitFields...
 
@@ -193,10 +193,15 @@ userSchema.methods.finishUser = ->
                   - coding: #{rightSolutions} right solutions, #{wrongSolutions} wrong solutions
                """
 
+userSchema.virtual('resultPercent').get ->
+  Math.round ((@result.coding.rightSolutions/@codeAsignIndecies.length) + @result.test.normScore) * 100/2
+
 userSchema.virtual('durationLeft').get ->
   res = Math.ceil (env.maxDuration - (Date.now() - @startedAt.getTime())) / 1000
   res = 0 if res < 0
   res
+
+userSchema.virtual('isAdmin').get -> @email in authConfig.admins
 
 User = mongoose.model 'User', userSchema
 
@@ -363,6 +368,45 @@ app.get "/api/env", (req, res) ->
     userEnv.creativeCodeAssignment = quizConfig.creativeCodeAssignment
 
   res.send userEnv
+
+app.all '/api/admin*', (req, res, next) ->
+  if req.user?.isAdmin
+    next()
+  else
+    res.send(403, 'Not an admin')
+
+app.get '/api/admin/users', (req, res) ->
+  res.contentType('json')
+  simpleData = (user) ->
+    userData = _.pick user, 'id', 'name', 'email', 'result', 'resultPercent', 'avatar', 'url'
+    JSON.stringify(userData)
+
+  User.find()
+    .stream(transform: simpleData)
+    .pipe(new UserArrayFormatter()).pipe(res)
+
+
+Stream = require('stream').Stream
+class UserArrayFormatter extends Stream
+  writable: true
+  _done: false
+
+  write: (doc) ->
+    unless @_hasWritten
+      @_hasWritten = true
+      @emit 'data', '{ "data": [' +  doc
+    else
+      @emit 'data', ',' + doc
+    return true
+
+  destroy: ->
+    return if @_done
+    User.count {}, (err, count) =>
+      @_done = true
+      @emit 'data', '], "total":' + count + '}'
+      @emit 'end'
+
+  end: @::destroy
 
 
 

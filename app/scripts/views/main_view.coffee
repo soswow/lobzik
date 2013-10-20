@@ -16,6 +16,7 @@ class app.MainView extends Backbone.View
       test: new app.TestView()
       coding: new app.CodingView()
       result: new app.ResultView()
+      admin: new app.AdminView()
     @$time = @$breadcrumb.find(".time").show()
 
     app.user.on 'change:finished', ->
@@ -106,5 +107,6 @@ class app.MainView extends Backbone.View
       avatar: app.user.get('avatar')
       name:  app.user.get('name')
       email:  app.user.get('email')
+      isAdmin: app.user.get('isAdmin')
     unless app.user.get 'finished'
       $("#finish-button").show()

@@ -120,11 +120,14 @@
         </div>
       </div>
     </div>
+
+    <div id="admin" class="screen">
+      <h3>Admin console</h3>
+      <div class="users"></div>
+    </div>
   </div>
   <div class="col-md-4 right-side">
-    <div id="loggedin-user">
-
-    </div>
+    <div id="loggedin-user"></div>
     <button id="finish-button" class=" btn btn-success btn-block btn-lg">Finish test!</button>
     <div class="alert">
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -147,6 +150,28 @@
     </div>
   </div>
 </div>
+
+<script id="admin-user" type="text/html">
+  <div class="user">
+    <div class="row">
+      <div class="col-md-2">
+        <img src="<%-avatar%>" width="80" height="80" alt="<%-name%>"/>
+      </div>
+      <div class="col-md-8">
+        <a href="<%-url%>"><%-name||"(no name)"%></a>
+        <br/>
+        (<%-email%>)
+        <br/>
+        <button class="btn btn-xs btn-default" style="margin-top:10px;">Show details</button>
+      </div>
+      <div class="col-md-2">
+        <strong class="percent"><%=percent%>%</strong>
+      </div>
+    </div>
+    <div class="details"></div>
+  </div>
+</script>
+
 
 <script id="pagination-tmpl" type="text/html">
   <ul class="pagination pull-right">
@@ -203,6 +228,9 @@
   <span class="name"><%- name %></span>
   <span class="email"><%- email %></span>
   <!--<i class='icon-#{authType}-sign'></i> -->
+  <% if(isAdmin){ %>
+    <a class="logout btn btn-xs btn-info" href="#page/admin">Admin console</a>
+  <% } %>
   <a class="logout btn btn-xs btn-default" href="/logout">Logout</a>
 </script>
 
@@ -230,6 +258,7 @@
 <!-- build:js(.tmp) scripts/main.js -->
 <script src="scripts/init.js"></script>
 <script src="scripts/views/test_view.js"></script>
+<script src="scripts/views/admin_view.js"></script>
 <script src="scripts/views/coding_view.js"></script>
 <script src="scripts/views/result_view.js"></script>
 <script src="scripts/views/login_view.js"></script>
