@@ -31,12 +31,13 @@ class app.MainView extends Backbone.View
 
   drawTimeLeft: ->
     boldStart = "<span class='bold'>"
-    dur = moment.duration app.user.get('durationLeft') * 1000
-    if dur is 60
+    durationLeft = app.user.get('durationLeft')
+    dur = moment.duration durationLeft * 1000
+    if durationLeft is 60
       @alert "One minute left! When it's gone all unsaved data will be lost!", "warning"
-    if dur is 0
+    if durationLeft is 0
       @alert "Time's up!", "info"
-      return app.router.navigate 'page/result', trigger: true
+      return @finishTest(false)
     padZero = (num) -> (num < 10 and "0" or "") + num
     time = [padZero(dur.hours()), (dur.minutes() > 0 and boldStart or "") +
     padZero(dur.minutes()), (dur.minutes() is 0 and boldStart or "") +
@@ -92,8 +93,8 @@ class app.MainView extends Backbone.View
     if @$breadcrumb.find('a').length
       @$breadcrumb.find('.test span, .coding span').unwrap()
 
-  finishTest: ->
-    if confirm("There is no way back. Are you sure you are ready?")
+  finishTest: (ask=true) ->
+    if not ask or confirm("There is no way back. Are you sure you are ready?")
       app.mainView.showLoader()
       app.user.save {finished: true},
         wait: true

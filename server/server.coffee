@@ -118,8 +118,10 @@ userSchema.methods.checkIfFinished = (cb) ->
     @finishUser()
     @durationTook = env.maxDuration
     @save cb
+    return true
   else
     cb null, this
+    return false
 
 userSchema.methods.finishUser = ->
   @durationTook = env.maxDuration - @durationLeft * 1000
@@ -331,10 +333,22 @@ app.all '/api/user', (req, res, next) ->
   else
     res.send(403, 'Not logged in')
 
-app.get "/api/user", (req, res) -> res.send req.user.publicJSON()
+app.get "/api/user", (req, res) ->
+  user = req.user
+  user.checkIfFinished ->
+    res.send user.publicJSON()
 
 app.put "/api/user", (req, res) ->
   user = req.user
+
+  if user.finished
+    return res.send 403, 'Already finished'
+
+  finished = user.checkIfFinished ->
+    if user.finished
+      res.send 403, 'Already finished'
+  return if finished
+
   codeSolutions = req.body?.codeSolutions or {}
   for name, {code:code, pass:pass} of codeSolutions
     lastSolution = _.last user.codeSolutions[name]
