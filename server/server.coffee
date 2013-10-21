@@ -190,7 +190,7 @@ userSchema.methods.finishUser = ->
 
   campfire?.join authConfig.campfire.roomId, (err, room) =>
     return console.error(err) if err and not room
-    room.paste """#{name} (#{@email}) just finished test with #{totalPercent}% of succss. Details:
+    room.paste """#{@name} (#{@email}) just finished test with #{totalPercent}% of success. Details:
                   - test: #{totalRightAnswers} right answers, #{totalWrongAnswers} wrong answers, #{notGivenRightAnswers} not given right answers
                   - coding: #{rightSolutions} right solutions, #{wrongSolutions} wrong solutions
                """
