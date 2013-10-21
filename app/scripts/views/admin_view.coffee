@@ -7,10 +7,11 @@ class app.AdminView extends Backbone.View
     _.bindAll @, 'renderOne', 'render'
     @users = []
     app.user.on 'change:id', =>
-      $.getJSON '/api/admin/users', (data) =>
-        @users = data.data
-        @users.sort (a, b) -> b.resultPercent - a.resultPercent
-        @trigger 'users:loaded'
+      if app.user.get('isAdmin')
+        $.getJSON '/api/admin/users', (data) =>
+          @users = data.data
+          @users.sort (a, b) -> b.resultPercent - a.resultPercent
+          @trigger 'users:loaded'
 
   renderOne: (user) ->
     @template
