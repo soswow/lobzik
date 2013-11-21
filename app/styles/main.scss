@@ -354,5 +354,66 @@ body {
   .user{
     margin:10px 0;
   }
+  h2.group {
+    i.icon-thumbs-up{
+      color: $brand-success
+    }
+    i.icon-thumbs-down{
+      color: $brand-danger
+    }
+  }
+
+  .users > .list-group {
+    &.good > li:first-child{
+      border-top-color: $brand-success;
+    }
+    &.bad > li:first-child{
+      border-top-color: $brand-danger;
+    }
+    > li:first-child{
+      border-top-width: 4px;
+    }
+  }
+
+  .details{
+    .question{
+      .answer{
+        &.correct{
+          background: lighten($brand-success, 30%);
+        }
+        .icon-ok-sign, .icon-remove-sign{
+          float: right;
+          font-size: 28px;
+          margin-top: -5px;
+        }
+        .icon-ok-sign{
+          color:$brand-success;
+        }
+        .icon-remove-sign{
+          color:$brand-danger;
+        }
+        input.cloze{
+          width: 100px;
+          &.correct{
+            background: lighten($brand-success, 30%);;
+          }
+          &.incorrect{
+            background: lighten($brand-danger, 30%);;
+          }
+        }
+      }
+    }
+    .code-assignment{
+      .pass-true{
+        color:$brand-success;
+      }
+      .pass-false{
+        color:$brand-danger;
+      }
+      pre{
+        display: none;
+      }
+    }
+  }
 }
 

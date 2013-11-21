@@ -25,7 +25,7 @@ class app.Router extends Backbone.Router
 
   testAndCoding: (page) ->
     @securedPage =>
-      unless app.user.get('finished')
+      if not app.user.get('finished') or app.user.get('isAdmin')
         app.mainView.addMenuLinks()
         app.mainView.showSidebar()
         app.mainView.show page

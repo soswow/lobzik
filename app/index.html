@@ -123,7 +123,8 @@
 
     <div id="admin" class="screen">
       <h3>Admin console</h3>
-      <div class="users"></div>
+      <div class="users">
+      </div>
     </div>
   </div>
   <div class="col-md-4 right-side">
@@ -152,24 +153,73 @@
 </div>
 
 <script id="admin-user" type="text/html">
-  <div class="user">
-    <div class="row">
-      <div class="col-md-2">
-        <img src="<%-avatar%>" width="80" height="80" alt="<%-name%>"/>
-      </div>
-      <div class="col-md-8">
-        <a href="<%-url%>"><%-name||"(no name)"%></a>
-        <br/>
+  <li class="list-group-item">
+    <div class="media">
+      <a class="pull-left" href="#">
+        <img class="media-object" src="<%-avatar%>" alt="<%-name%>" width="80" height="80">
+      </a>
+      <div class="media-body">
+        <h4 class="media-heading">
+          <strong class="percent pull-right"><%=percent%>%</strong>
+          <a href="<%-url%>"><%-name||"(no name)"%></a>
+        </h4>
         (<%-email%>)
         <br/>
-        <button class="btn btn-xs btn-default" style="margin-top:10px;">Show details</button>
-      </div>
-      <div class="col-md-2">
-        <strong class="percent"><%=percent%>%</strong>
+        <button class="btn btn-xs btn-default js-show-details" data-id="<%=id%>" style="margin-top:10px;">Show details</button>
       </div>
     </div>
-    <div class="details"></div>
+    <div class="details id-<%=id%>" style="margin-top:15px;"></div>
+  </li>
+</script>
+
+<script id="admin-user-detailed" type="text/html">
+  <% tests.forEach(function(test){ %>
+  <ul class="list-group question">
+    <li class="list-group-item active"><%=test.name%></li>
+
+    <% if(test.options) test.options.forEach(function(option){ %>
+    <li class="answer list-group-item <%if(option.currentAnswer){%>correct<%}%>">
+      <% if(option.currentAnswer === option.userChecked){ %>
+      <span class="icon-ok-sign"></span>
+      <% }else{ %>
+      <span class="icon-remove-sign"></span>
+      <% } %>
+      <%=option.text%>
+    </li>
+    <% }) %>
+
+    <% if(test.cloze){ %>
+      <li class="answer list-group-item"><%=test.cloze%></li>
+    <% } %>
+  </ul>
+  <% }) %>
+
+  <% codes.forEach(function(code){ %>
+  <div class="panel panel-default code-assignment">
+    <div class="panel-heading"><%=code.name%></div>
+    <div class="panel-body">
+      <% code.solutions.forEach(function(sol, index){ %>
+        <button data-index="<%=index%>" class="btn btn-xs <%=sol.pass?'btn-success':'btn-danger'%> code-solution-index"><%=index%></button>
+      <% }) %>
+      <% code.solutions.forEach(function(sol, index){ %>
+      <pre data-index="<%=index%>" class='brush: javascript; toolbar: false; gutter: false;tab-size: 2; smart-tabs: false; class-name: move-up;'><%-sol.code%></pre>
+      <% }) %>
+    </div>
   </div>
+  <% }) %>
+  <!--<div class="row">-->
+    <!--<div class="col-md-3">-->
+      <!---->
+      <!--&lt;!&ndash;<ul class="nav nav-pills nav-stacked">&ndash;&gt;-->
+        <!--&lt;!&ndash;<li class="active"><a href="#">Test</a></li>&ndash;&gt;-->
+        <!--&lt;!&ndash;<li><a href="#">Profile</a></li>&ndash;&gt;-->
+        <!--&lt;!&ndash;<li><a href="#">Messages</a></li>&ndash;&gt;-->
+      <!--&lt;!&ndash;</ul>&ndash;&gt;-->
+    <!--</div>-->
+    <!--<div class="col-md-9">-->
+
+    <!--</div>-->
+  <!--</div>-->
 </script>
 
 

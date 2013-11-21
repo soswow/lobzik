@@ -280,11 +280,11 @@ passport.deserializeUser (id, done) ->
 #
 app = express()
 
-app.configure 'development', ->
-  app.use require('connect-livereload')(
-    port: 35729
-    excludeList: ['/logout', '/auth', '.js', '.css', '.svg', '.ico', '.woff', '.png', '.jpg', '.jpeg']
-  )
+#app.configure 'development', ->
+#  app.use require('connect-livereload')(
+#    port: 35729
+#    excludeList: ['/logout', '/auth', '.js', '.css', '.svg', '.ico', '.woff', '.png', '.jpg', '.jpeg']
+#  )
 
 app.use express.json()
 app.use express.urlencoded()
@@ -373,6 +373,13 @@ app.put "/api/user", (req, res) ->
 app.get "/api/env", (req, res) ->
   userEnv = _.clone env
   user = req.user
+  if user?.isAdmin
+    userEnv = _.clone quizConfig
+    userEnv.codeAssignments.forEach (codeTest) ->
+      codeTest.testCase = codeTest.testCase?.toString()
+    res.send userEnv
+    return
+
   if user and not user.finished
     userEnv.testQuestions = user.testIndecies.map (i) -> _.omit quizConfig.testQuestions[i], 'rightAnswers'
     userEnv.codeAssignments = user.codeAsignIndecies.map (i) ->
@@ -398,6 +405,11 @@ app.get '/api/admin/users', (req, res) ->
   User.find()
     .stream(transform: simpleData)
     .pipe(new UserArrayFormatter()).pipe(res)
+
+app.get '/api/admin/users/:id', (req, res) ->
+  res.contentType('json')
+  User.findById req.params.id, (err, doc) ->
+    res.send JSON.stringify(doc)
 
 
 Stream = require('stream').Stream
