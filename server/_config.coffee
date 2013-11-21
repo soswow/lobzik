@@ -13,3 +13,4 @@ module.exports =
     consumerSecret: '131415'
     state: 'blahblah' #A long unique string value of your choice that is hard to guess. Used to prevent CSRF.
   admins: ['admin@company.com']
+  bugsnag: 'token'

@@ -1,7 +1,6 @@
 "use strict"
 
 bugsnag = require("bugsnag")
-bugsnag.register("764cddd764b961bbd41e20c081501ccf")
 express = require("express")
 http = require("http")
 path = require("path")
@@ -9,6 +8,7 @@ _ = require("underscore")
 request = require('request')
 
 authConfig = require('./config')
+bugsnag.register(authConfig.bugsnag)
 
 if authConfig.campfire
   Campfire = require('smores')
