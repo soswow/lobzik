@@ -251,10 +251,14 @@ passport.use new GitHubStrategy {
         authType: 'github'
 
     if profile.email
+      console.log "email is there #{profile.email}"
       next()
     else
       url = "https://api.github.com/user/emails?access_token=#{accessToken}"
-      request url, (error, response, body) ->
+      request
+        url: url
+        headers: 'User-Agent': 'Lobzik'
+      , (error, response, body) ->
         if !error && response.statusCode == 200
           emails = JSON.parse(body)
           console.log 'emails:', emails
@@ -262,6 +266,8 @@ passport.use new GitHubStrategy {
             if email.indexOf('noreply.github.com') is -1
               profile.email = email
               break
+        else
+          console.log "Asking for email fails", response.statusCode, body
 
         return next()
 
@@ -444,5 +450,6 @@ db = mongoose.connection
 db.on 'error', console.error.bind console, 'connection error:'
 db.once 'open', ->
   # start server
+  console.log "Trying to start on #{app.get('port')} in #{process.env.NODE_ENV} env"
   http.createServer(app).listen app.get("port"), ->
-    console.log "Express App started on #{app.get('port')} in #{process.env.NODE_ENV} env"
+    console.log "Started"
