@@ -23,8 +23,22 @@ Example of production instance is available here: [test.toggl.com](https://test.
 
 ###How to run
 This project uses grunt for building and running development version.
-Just run `grunt` to run local dev version. Application uses mongodb, so in order to run it should be available.
-Also you need to rename `server/_config.coffee` to `server/config.coffee` and fill it with right information
+* First make sure you have mongodb running.
+* You need to rename `server/_config.coffee` to `server/config.coffee` and fill it with right information
+* Also you need `compass` for scss processing.
+
+Finally run `grunt` to make it start in development mode.
 
 ###How to build
-To build project run `grunt build` and you will get ready to deploy client code in folder `/dist`
+To build project run `grunt build` and you will get ready to deploy client code in folder `/dist`. In order to start server-side separatly you need to: 
+* Run compile npm modules in with `production` flag `npm install --production`
+* Put `npm-modules` folder and other files from `/server` folder together. Resultig folder will look like
+```
+./
+../
+config.coffee
+node_modules/
+quiz-config.js
+server.coffee
+```
+* Run server with `server.coffee`
